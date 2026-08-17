@@ -1,0 +1,267 @@
+/* ==========================================================================
+   Sumi — design tokens
+   墨 tinta sobre papel 鳥の子
+
+   Dois temas: gofun (claro, branco de concha) e sumi (escuro, tinta).
+   Aplicados no <html> via data-theme="gofun" | data-theme="sumi".
+
+   Camadas:
+     1. Primitivas — valores crus. Nunca usadas direto nos componentes.
+     2. Semânticas — o que os componentes leem. Trocam por tema.
+     3. Escalas    — tipografia, espaço, movimento. Iguais nos dois temas.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Primitivas
+   -------------------------------------------------------------------------- */
+
+:root {
+  /* Papel — fibra de kozo, levemente frio para ler como papel, não creme */
+  --paper-0: #f0eee6;
+  --paper-1: #e9e6dc;
+  --paper-2: #ded9cc;
+  --paper-3: #c4bfb1;
+
+  /* Tinta — sumi moída puxa para o preto quente, nunca #000 puro */
+  --ink-0: #13130f;
+  --ink-1: #1f1e19;
+  --ink-2: #2e2c25;
+  --ink-3: #4a4740;
+  --ink-4: #8a857a;
+
+  /* Shu 朱 — vermelhão de carimbo. Mais azulado e quente que terracota. */
+  --shu-light: #c3352a;
+  --shu-dark: #de5647;
+}
+
+/* --------------------------------------------------------------------------
+   2. Semânticas
+   -------------------------------------------------------------------------- */
+
+:root,
+[data-theme='gofun'] {
+  color-scheme: light;
+
+  --bg: var(--paper-0);
+  --surface: var(--paper-1);
+  --surface-sunken: var(--paper-2);
+
+  --text: var(--ink-1);
+  --text-muted: #6b665c;
+  --text-faint: #918b7f;
+
+  --line: rgba(31, 30, 25, 0.1);
+  --line-strong: rgba(31, 30, 25, 0.2);
+
+  /* O acento só aparece enquanto o tempo corre. Ver nota no fim do arquivo. */
+  --accent: var(--shu-light);
+  --accent-quiet: rgba(195, 53, 42, 0.14);
+
+  /* Status — dessaturados para a tabela do histórico ficar quieta.
+     Só --status-running toma emprestado o acento. */
+  --status-running: var(--shu-light);
+  --status-done: #5c7a5e;
+  --status-stopped: #918b7f;
+
+  --focus-ring: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent);
+}
+
+[data-theme='sumi'] {
+  color-scheme: dark;
+
+  --bg: var(--ink-0);
+  --surface: var(--ink-1);
+  --surface-sunken: #0d0d0a;
+
+  --text: #ede8da;
+  --text-muted: #9a9385;
+  --text-faint: #6f6a5f;
+
+  --line: rgba(237, 232, 218, 0.11);
+  --line-strong: rgba(237, 232, 218, 0.22);
+
+  --accent: var(--shu-dark);
+  --accent-quiet: rgba(222, 86, 71, 0.18);
+
+  --status-running: var(--shu-dark);
+  --status-done: #7fa382;
+  --status-stopped: #6f6a5f;
+
+  --focus-ring: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent);
+}
+
+/* --------------------------------------------------------------------------
+   3. Tipografia
+   Mincho (serifada) para o relógio e títulos, Gothic (sem serifa) para a
+   interface — a convenção editorial japonesa.
+
+   As famílias vêm do next/font (ver src/app/layout.tsx), que injeta as
+   variáveis --font-mincho e --font-gothic no <html>.
+   -------------------------------------------------------------------------- */
+
+:root {
+  --font-display: var(--font-mincho), 'Times New Roman', serif;
+  --font-ui: var(--font-gothic), system-ui, sans-serif;
+
+  --size-clock: clamp(4.5rem, 16vw, 8.5rem);
+  --size-lg: 1.25rem;
+  --size-md: 0.9375rem;
+  --size-sm: 0.8125rem;
+  --size-eyebrow: 0.6875rem;
+
+  --weight-light: 300;
+  --weight-regular: 400;
+  --weight-medium: 500;
+
+  --leading-tight: 1;
+  --leading-body: 1.6;
+
+  --tracking-clock: -0.03em;
+  --tracking-eyebrow: 0.16em;
+}
+
+/* --------------------------------------------------------------------------
+   4. Espaço — base de 8px. A tela do timer usa só a ponta larga da escala.
+   -------------------------------------------------------------------------- */
+
+:root {
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-24: 6rem;
+
+  --measure: 30rem;
+  --radius: 4px;
+  --hairline: 1px;
+}
+
+/* --------------------------------------------------------------------------
+   5. Movimento — lento e constante. Nada estala.
+   -------------------------------------------------------------------------- */
+
+:root {
+  --dur-quick: 180ms;
+  --dur-base: 420ms;
+  --dur-slow: 700ms;
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-quick: 0ms;
+    --dur-base: 0ms;
+    --dur-slow: 0ms;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   6. Base
+   -------------------------------------------------------------------------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--bg);
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: var(--size-md);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-body);
+  -webkit-font-smoothing: antialiased;
+  transition: background-color var(--dur-slow) var(--ease),
+    color var(--dur-slow) var(--ease);
+}
+
+:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+  border-radius: var(--radius);
+}
+
+/* --------------------------------------------------------------------------
+   7. Peças de assinatura
+   -------------------------------------------------------------------------- */
+
+/* O relógio. Algarismos tabulares impedem os dígitos de dançar a cada tick. */
+.clock {
+  font-family: var(--font-display);
+  font-size: var(--size-clock);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-clock);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum';
+  color: var(--text);
+}
+
+/* Progresso como um traço único de 2px, não anel nem barra grossa.
+   O JS controla --progress de 0 a 1. */
+.stroke {
+  height: 2px;
+  width: 100%;
+  background: var(--line);
+  overflow: hidden;
+}
+
+.stroke::after {
+  content: '';
+  display: block;
+  height: 100%;
+  width: calc(var(--progress, 0) * 100%);
+  background: var(--accent);
+  transition: width var(--dur-base) linear;
+}
+
+/* Rótulos eyebrow — o único lugar onde letterspacing é permitido. */
+.eyebrow {
+  font-size: var(--size-eyebrow);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+/* Ponto de status para a tabela do histórico. */
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+  vertical-align: baseline;
+  background: var(--status-stopped);
+}
+
+.dot[data-status='running'] {
+  background: var(--status-running);
+}
+.dot[data-status='completed'] {
+  background: var(--status-done);
+}
+
+/* ==========================================================================
+   A única regra que segura o design inteiro:
+
+   O vermelhão aparece somente enquanto o tempo corre. Em repouso a
+   interface é tinta sobre papel e mais nada — nenhum botão colorido,
+   nenhuma borda de acento, nenhum item de navegação destacado. Ao iniciar
+   o timer, o traço, o ponto de "em andamento" e o botão de interromper
+   acendem juntos. Cor significa tempo passando.
+
+   Toda vez que a mão coçar para usar --accent, pergunte: a coisa que vou
+   colorir está rodando? Se não está, use --text-muted.
+   ========================================================================== */
