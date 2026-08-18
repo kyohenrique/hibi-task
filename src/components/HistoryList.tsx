@@ -3,19 +3,15 @@
 import { useEffect, useState } from 'react';
 import { useNow } from '@/hooks/useNow';
 import { formatClock, formatDate, formatDuration } from '@/lib/format';
+import { dictionaries, type Language } from '@/lib/i18n';
 import { elapsedMs } from '@/lib/timer';
-import type { Task, TaskStatus } from '@/lib/types';
+import type { Task } from '@/lib/types';
+import { useSettings } from '@/state/settings';
 import { useTasks } from '@/state/tasks';
 import styles from './HistoryList.module.css';
 
 /** Quanto tempo o "confirmar?" da exclusão espera antes de desistir. */
 const CONFIRM_TIMEOUT_MS = 3_000;
-
-const STATUS_LABELS: Record<TaskStatus, string> = {
-  running: 'em andamento',
-  stopped: 'interrompida',
-  completed: 'concluída',
-};
 
 /*
  * A duração exibida depende do status — e o switch sobre a discriminated
@@ -23,33 +19,35 @@ const STATUS_LABELS: Record<TaskStatus, string> = {
  * concluída mostra o que cumpriu; interrompida, até onde foi do quanto
  * pretendia; em andamento, o decorrido ao vivo sobre o planejado.
  */
-function durationLabel(task: Task, now: number): string {
+function durationLabel(task: Task, now: number, language: Language): string {
+  const t = dictionaries[language];
   switch (task.status) {
     case 'running':
       return `${formatClock(elapsedMs(task, now))} / ${formatClock(task.plannedMs)}`;
     case 'stopped':
-      return `${formatDuration(task.elapsedMs)} de ${formatDuration(task.plannedMs)}`;
+      return `${formatDuration(task.elapsedMs, language)} ${t.durationOf} ${formatDuration(task.plannedMs, language)}`;
     case 'completed':
-      return formatDuration(task.plannedMs);
+      return formatDuration(task.plannedMs, language);
   }
 }
 
 export function HistoryList() {
   const { tasks, hydrated } = useTasks();
+  const { t } = useSettings();
 
   // O tick só roda se houver tarefa em andamento na lista — em repouso,
   // o histórico é uma página estática.
-  const hasRunning = tasks.some((t) => t.status === 'running');
+  const hasRunning = tasks.some((task) => task.status === 'running');
   const now = useNow(hasRunning);
 
   if (!hydrated) return null;
 
   return (
     <section className={styles.stage}>
-      <span className="eyebrow">histórico</span>
+      <span className="eyebrow">{t.historyTitle}</span>
 
       {tasks.length === 0 ? (
-        <p className={styles.empty}>nenhuma tarefa ainda</p>
+        <p className={styles.empty}>{t.historyEmpty}</p>
       ) : (
         <ul className={styles.list}>
           {tasks.map((task) => (
@@ -63,6 +61,13 @@ export function HistoryList() {
 
 function HistoryItem({ task, now }: { task: Task; now: number }) {
   const { remove } = useTasks();
+  const { t, settings } = useSettings();
+
+  const statusLabels = {
+    running: t.statusRunning,
+    stopped: t.statusStopped,
+    completed: t.statusCompleted,
+  } as const;
 
   /*
    * Exclusão em dois cliques, sem modal: o primeiro troca a lixeira por
@@ -85,11 +90,13 @@ function HistoryItem({ task, now }: { task: Task; now: number }) {
       <div className={styles.info}>
         <span className={styles.name}>{task.name}</span>
         <span className={styles.meta}>
-          {STATUS_LABELS[task.status]} · {formatDate(task.startedAt)}
+          {statusLabels[task.status]} · {formatDate(task.startedAt, settings.language)}
         </span>
       </div>
 
-      <span className={styles.duration}>{durationLabel(task, now)}</span>
+      <span className={styles.duration}>
+        {durationLabel(task, now, settings.language)}
+      </span>
 
       {/* A tarefa em andamento não é excluível — a ação dela é interromper. */}
       {task.status !== 'running' &&
@@ -99,13 +106,13 @@ function HistoryItem({ task, now }: { task: Task; now: number }) {
             className={styles.confirm}
             onClick={() => remove(task.id)}
           >
-            confirmar?
+            {t.confirm}
           </button>
         ) : (
           <button
             type="button"
             className={styles.trash}
-            aria-label={`excluir "${task.name}"`}
+            aria-label={t.deleteAria(task.name)}
             onClick={() => setConfirming(true)}
           >
             <TrashIcon />

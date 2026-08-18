@@ -14,19 +14,21 @@ import {
   stepMinutes,
 } from '@/lib/timer';
 import type { RunningTask } from '@/lib/types';
+import { useSettings } from '@/state/settings';
 import { useTasks } from '@/state/tasks';
 import styles from './TimerScreen.module.css';
 
 /*
  * Atalhos rápidos: respiro e pausa são as pausas curta e longa do método
- * pomodoro; o pomodoro é o bloco de foco. `as const` congela o array e
- * faz o TypeScript tratar cada valor como literal, não como number/string
- * genéricos.
+ * pomodoro; o pomodoro é o bloco de foco. Os rótulos são CHAVES do
+ * dicionário (não texto): o texto de verdade sai de t[labelKey], no
+ * idioma atual. `as const` congela o array e faz o TypeScript tratar
+ * cada chave como literal — o que garante que ela existe no dicionário.
  */
 const PRESETS = [
-  { label: 'respiro', minutes: 5 },
-  { label: 'pausa', minutes: 15 },
-  { label: 'pomodoro', minutes: 25 },
+  { minutes: 5, labelKey: 'presetBreath' },
+  { minutes: 15, labelKey: 'presetPause' },
+  { minutes: 25, labelKey: 'presetPomodoro' },
 ] as const;
 
 /*
@@ -48,6 +50,7 @@ export function TimerScreen() {
 
 function SetupView() {
   const { start } = useTasks();
+  const { t } = useSettings();
 
   /*
    * "Controlled inputs": o valor de cada campo mora no estado do React e
@@ -82,13 +85,11 @@ function SetupView() {
    */
   let hint = '';
   if (attempted && missingName) {
-    hint = resting
-      ? 'dê um nome à tarefa e escolha a duração'
-      : 'dê um nome à tarefa para começar';
+    hint = resting ? t.hintMissingBoth : t.hintMissingName;
   } else if (typedInvalid) {
-    hint = `use um valor inteiro entre ${MIN_MINUTES} e ${MAX_MINUTES} minutos`;
+    hint = t.hintMinutesRange(MIN_MINUTES, MAX_MINUTES);
   } else if (attempted && resting) {
-    hint = 'escolha a duração para começar';
+    hint = t.hintMissingDuration;
   }
 
   const previewMs = validMinutes ? parsedMinutes * MINUTE_MS : 0;
@@ -96,14 +97,14 @@ function SetupView() {
   return (
     <section className={styles.stage}>
       <p className={styles.intent}>
-        vou trabalhar em{' '}
+        {t.intentPrefix}{' '}
         <input
           className={`${styles.field} ${styles.fieldTask}`}
           value={name}
           onChange={(e) => setName(e.target.value)}
-          aria-label="nome da tarefa"
+          aria-label={t.taskNameAria}
         />{' '}
-        por{' '}
+        {t.intentMiddle}{' '}
         <span className={styles.minutesGroup}>
           {/*
             setMinutes recebe uma FUNÇÃO (updater) em vez do valor pronto:
@@ -114,7 +115,7 @@ function SetupView() {
           <button
             type="button"
             className={styles.stepButton}
-            aria-label={`diminuir ${STEP_MINUTES} minutos`}
+            aria-label={t.stepDownAria(STEP_MINUTES)}
             onClick={() => setMinutes((m) => String(stepMinutes(Number(m), -1)))}
           >
             −
@@ -126,18 +127,18 @@ function SetupView() {
             max={MAX_MINUTES}
             value={minutes}
             onChange={(e) => setMinutes(e.target.value)}
-            aria-label="duração em minutos"
+            aria-label={t.minutesAria}
           />
           <button
             type="button"
             className={styles.stepButton}
-            aria-label={`aumentar ${STEP_MINUTES} minutos`}
+            aria-label={t.stepUpAria(STEP_MINUTES)}
             onClick={() => setMinutes((m) => String(stepMinutes(Number(m), 1)))}
           >
             +
           </button>
         </span>{' '}
-        min
+        {t.intentUnit}
       </p>
 
       {/*
@@ -160,7 +161,7 @@ function SetupView() {
               className={styles.preset}
               onClick={() => setMinutes(String(preset.minutes))}
             >
-              {preset.label} {preset.minutes}
+              {t[preset.labelKey]} {preset.minutes}
             </button>
           </Fragment>
         ))}
@@ -189,7 +190,7 @@ function SetupView() {
           start(trimmedName, parsedMinutes * MINUTE_MS);
         }}
       >
-        começar
+        {t.start}
       </button>
     </section>
   );
@@ -197,6 +198,7 @@ function SetupView() {
 
 function RunningView({ task }: { task: RunningTask }) {
   const { stop } = useTasks();
+  const { t } = useSettings();
   const now = useNow();
 
   // A conclusão automática NÃO mora aqui: ela vale para o app inteiro
@@ -221,7 +223,7 @@ function RunningView({ task }: { task: RunningTask }) {
       />
 
       <button type="button" className={`${styles.action} ${styles.actionStop}`} onClick={stop}>
-        interromper
+        {t.stop}
       </button>
     </section>
   );

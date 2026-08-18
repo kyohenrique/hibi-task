@@ -33,9 +33,9 @@ Diretórios ainda inexistentes são criados conforme as etapas do projeto avanç
 - **Três status, sem pausa**: `running` (em andamento), `stopped` (interrompida — única ação possível após iniciar) e `completed` (concluída). `Task` é uma discriminated union por status.
 - **Atalhos rápidos** (respiro 5 · pausa 15 · pomodoro 25) só preenchem os minutos; nunca iniciam o timer sozinhos.
 - **Duração limitada**: inteiro entre `MIN_MINUTES` (1) e `MAX_MINUTES` (180), constantes de `lib/timer.ts` — teto de produto (sessões de foco, não turnos), única fonte da verdade para formulário e validação.
-- **i18n sem biblioteca**: dicionário TypeScript em `lib/i18n.ts` (pt/en), escolha salva nos ajustes. Sem rotas por locale.
+- **i18n sem biblioteca**: dicionário TypeScript em `lib/i18n.ts` (pt/en), escolha salva nos ajustes. Sem rotas por locale. Para adicionar uma string: criar a chave no dicionário `pt` (a fonte da verdade) — o compilador exige a tradução em `en`, porque `en` é tipado como `typeof pt`.
 - **Notificação**: pedir permissão apenas quando o usuário ligar a opção, nunca no carregamento.
-- Persistência em `localStorage` sob chave versionada (`hibi.v1`), com parse defensivo.
+- Persistência em `localStorage` sob chaves versionadas (`hibi.v1` para tarefas, `hibi.settings.v1` para ajustes), com parse defensivo.
 
 ## Convenções
 
@@ -43,4 +43,4 @@ Diretórios ainda inexistentes são criados conforme as etapas do projeto avanç
 - Comentários de código em **pt-BR**, didáticos: explicam o porquê e conceitos de JS/TS/React quando valem a pena, sem ruído linha a linha.
 - Commits em **inglês**, no padrão conventional commits (`feat:`, `fix:`, `docs:`...). Commits são sempre propostos e aprovados pelo mantenedor antes de executados.
 - Componentes usam export nomeado; páginas usam export default (exigência do Next).
-- UI em pt-BR até a chegada do i18n (etapa dos ajustes).
+- Nenhuma string fixa de UI em componente — todo texto visível vem de `useSettings().t`.

@@ -27,27 +27,32 @@ describe('formatClock', () => {
 
 describe('formatDuration', () => {
   it('minutos puros, horas cheias e horas quebradas', () => {
-    expect(formatDuration(25 * 60_000)).toBe('25 min');
-    expect(formatDuration(60 * 60_000)).toBe('1 h');
-    expect(formatDuration(90 * 60_000)).toBe('1 h 30 min');
+    expect(formatDuration(25 * 60_000, 'pt')).toBe('25 min');
+    expect(formatDuration(60 * 60_000, 'pt')).toBe('1 h');
+    expect(formatDuration(90 * 60_000, 'pt')).toBe('1 h 30 min');
   });
 
   it('arredonda para o minuto mais próximo', () => {
-    expect(formatDuration(10 * 60_000 + 20_000)).toBe('10 min');
-    expect(formatDuration(10 * 60_000 + 40_000)).toBe('11 min');
+    expect(formatDuration(10 * 60_000 + 20_000, 'pt')).toBe('10 min');
+    expect(formatDuration(10 * 60_000 + 40_000, 'pt')).toBe('11 min');
   });
 
-  it('abaixo de meio minuto vira "menos de 1 min"', () => {
-    expect(formatDuration(20_000)).toBe('menos de 1 min');
-    expect(formatDuration(0)).toBe('menos de 1 min');
+  it('abaixo de meio minuto, o texto segue o idioma', () => {
+    expect(formatDuration(20_000, 'pt')).toBe('menos de 1 min');
+    expect(formatDuration(20_000, 'en')).toBe('less than 1 min');
   });
 });
 
 describe('formatDate', () => {
-  it('formata como "dia mês · hh:mm"', () => {
-    // new Date(ano, mêsIndexado, dia, ...) usa o fuso local — determinístico
-    // para o teste porque a formatação também lê o fuso local.
-    const ts = new Date(2026, 7, 17, 14, 5).getTime();
-    expect(formatDate(ts)).toBe('17 ago · 14:05');
+  // new Date(ano, mêsIndexado, dia, ...) usa o fuso local — determinístico
+  // para o teste porque a formatação também lê o fuso local.
+  const ts = new Date(2026, 7, 17, 14, 5).getTime();
+
+  it('pt: "dia mês · hh:mm"', () => {
+    expect(formatDate(ts, 'pt')).toBe('17 ago · 14:05');
+  });
+
+  it('en: "mês dia · hh:mm"', () => {
+    expect(formatDate(ts, 'en')).toBe('aug 17 · 14:05');
   });
 });

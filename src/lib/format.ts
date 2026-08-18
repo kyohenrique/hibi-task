@@ -1,8 +1,9 @@
+import { dictionaries, type Language } from './i18n';
 import { MINUTE_MS } from './timer';
 
 /*
- * Formatação de tempo para exibição. Funções puras: recebem ms, devolvem
- * string, sem saber nada de tarefas ou de React.
+ * Formatação de tempo para exibição. Funções puras: recebem ms (e, quando
+ * o texto muda por idioma, o Language), devolvem string — nada de React.
  */
 
 /**
@@ -33,9 +34,9 @@ export function formatClock(ms: number): string {
  * Arredonda para o minuto mais próximo; abaixo disso, "menos de 1 min"
  * — melhor do que exibir um seco "0 min" para quem interrompeu cedo.
  */
-export function formatDuration(ms: number): string {
+export function formatDuration(ms: number, language: Language): string {
   const totalMinutes = Math.round(Math.max(0, ms) / MINUTE_MS);
-  if (totalMinutes < 1) return 'menos de 1 min';
+  if (totalMinutes < 1) return dictionaries[language].lessThanMinute;
 
   const hours = Math.floor(totalMinutes / 60);
   const minutes = totalMinutes % 60;
@@ -45,18 +46,19 @@ export function formatDuration(ms: number): string {
 }
 
 /*
- * Meses abreviados à mão em vez de Intl.DateTimeFormat: o formato fica
- * exatamente como o design quer ("17 ago · 14:32", sem "de" nem ponto) e
- * a troca por dicionário do i18n (etapa dos ajustes) será trivial.
+ * Meses abreviados à mão (no dicionário) em vez de Intl.DateTimeFormat:
+ * o formato fica exatamente como o design quer, sem "de" nem ponto.
+ * A ordem dia/mês segue a convenção de cada idioma.
  */
-const MONTHS = [
-  'jan', 'fev', 'mar', 'abr', 'mai', 'jun',
-  'jul', 'ago', 'set', 'out', 'nov', 'dez',
-];
 
-/** Data de criação para o histórico: "17 ago · 14:32". */
-export function formatDate(timestamp: number): string {
+/** Data de criação para o histórico: "17 ago · 14:32" / "aug 17 · 14:32". */
+export function formatDate(timestamp: number, language: Language): string {
   const d = new Date(timestamp);
   const pad = (n: number) => String(n).padStart(2, '0');
-  return `${d.getDate()} ${MONTHS[d.getMonth()]} · ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+
+  const month = dictionaries[language].months[d.getMonth()];
+  const dayMonth =
+    language === 'pt' ? `${d.getDate()} ${month}` : `${month} ${d.getDate()}`;
+
+  return `${dayMonth} · ${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
