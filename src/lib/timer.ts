@@ -25,6 +25,14 @@ export const MINUTE_MS = 60_000;
 export const MIN_MINUTES = 1;
 export const MAX_MINUTES = 180;
 
+/*
+ * Teto do nome da tarefa. É um limite de produto, como o dos minutos:
+ * a intenção é uma frase curta ("revisar o capítulo 3"), não um
+ * parágrafo — e o nome precisa caber na linha do histórico e no título
+ * da aba sem virar reticências.
+ */
+export const MAX_NAME_LENGTH = 22;
+
 /** A duração digitada é utilizável? Inteiro entre MIN e MAX. */
 export function isValidMinutes(minutes: number): boolean {
   return (

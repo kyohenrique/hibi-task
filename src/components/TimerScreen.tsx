@@ -6,6 +6,7 @@ import { useNow } from '@/hooks/useNow';
 import { formatClock } from '@/lib/format';
 import {
   MAX_MINUTES,
+  MAX_NAME_LENGTH,
   MIN_MINUTES,
   MINUTE_MS,
   STEP_MINUTES,
@@ -110,9 +111,12 @@ function SetupView() {
       <div className={styles.head}>
         <p className={styles.intent}>
         {t.intentPrefix}{' '}
+        {/* maxLength trava a digitação E a colagem no próprio navegador,
+            então não existe estado inválido para validar depois. */}
         <input
           className={`${styles.field} ${styles.fieldTask}`}
           value={name}
+          maxLength={MAX_NAME_LENGTH}
           onChange={(e) => setName(e.target.value)}
           aria-label={t.taskNameAria}
         />{' '}
