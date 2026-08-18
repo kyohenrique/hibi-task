@@ -7,10 +7,12 @@ import {
   MAX_MINUTES,
   MIN_MINUTES,
   MINUTE_MS,
+  STEP_MINUTES,
   isExpired,
   isValidMinutes,
   progress,
   remainingMs,
+  stepMinutes,
 } from '@/lib/timer';
 import type { RunningTask } from '@/lib/types';
 import { useTasks } from '@/state/tasks';
@@ -50,11 +52,18 @@ function SetupView() {
    * intermediários da digitação, como o campo vazio.
    */
   const [name, setName] = useState('');
-  const [minutes, setMinutes] = useState('25');
+  // Começa em 0 de propósito: escolher a duração é um ato do usuário
+  // (digitando, num atalho ou no stepper), não um padrão herdado.
+  const [minutes, setMinutes] = useState('0');
 
   const parsedMinutes = Number(minutes);
   const validMinutes = isValidMinutes(parsedMinutes);
   const canStart = name.trim().length > 0 && validMinutes;
+
+  // O 0 (ou o campo vazio) é o estado de DESCANSO, não um erro: a dica de
+  // validação só aparece quando o usuário digitou algo fora dos limites.
+  const resting = minutes.trim() === '' || parsedMinutes === 0;
+  const showHint = !resting && !validMinutes;
 
   const previewMs = validMinutes ? parsedMinutes * MINUTE_MS : 0;
 
@@ -69,16 +78,51 @@ function SetupView() {
           aria-label="nome da tarefa"
         />{' '}
         por{' '}
-        <input
-          className={`${styles.field} ${styles.fieldMinutes}`}
-          type="number"
-          min={MIN_MINUTES}
-          max={MAX_MINUTES}
-          value={minutes}
-          onChange={(e) => setMinutes(e.target.value)}
-          aria-label="duração em minutos"
-        />{' '}
+        <span className={styles.minutesGroup}>
+          {/*
+            setMinutes recebe uma FUNÇÃO (updater) em vez do valor pronto:
+            "o novo estado é este cálculo sobre o anterior". Com o valor
+            direto, dois cliques rápidos leriam ambos o estado da mesma
+            renderização e o segundo clique se perderia (stale closure).
+          */}
+          <button
+            type="button"
+            className={styles.stepButton}
+            aria-label={`diminuir ${STEP_MINUTES} minutos`}
+            onClick={() => setMinutes((m) => String(stepMinutes(Number(m), -1)))}
+          >
+            −
+          </button>
+          <input
+            className={`${styles.field} ${styles.fieldMinutes}`}
+            type="number"
+            min={MIN_MINUTES}
+            max={MAX_MINUTES}
+            value={minutes}
+            onChange={(e) => setMinutes(e.target.value)}
+            aria-label="duração em minutos"
+          />
+          <button
+            type="button"
+            className={styles.stepButton}
+            aria-label={`aumentar ${STEP_MINUTES} minutos`}
+            onClick={() => setMinutes((m) => String(stepMinutes(Number(m), 1)))}
+          >
+            +
+          </button>
+        </span>{' '}
         min
+      </p>
+
+      {/*
+        aria-live="polite": leitores de tela anunciam a dica quando ela
+        surge, sem interromper o que estiverem lendo. O elemento existe
+        sempre (com min-height no CSS) para o layout não pular.
+      */}
+      <p className={styles.hint} aria-live="polite">
+        {showHint
+          ? `use um valor inteiro entre ${MIN_MINUTES} e ${MAX_MINUTES} minutos`
+          : ''}
       </p>
 
       {/* Atalhos: só preenchem o campo. Começar continua sendo um ato seu. */}

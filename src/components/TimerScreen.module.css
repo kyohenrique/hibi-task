@@ -11,6 +11,34 @@
   margin: 0 0 var(--space-2);
 }
 
+.minutesGroup {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-1);
+}
+
+.stepButton {
+  background: none;
+  border: 0;
+  padding: 0 var(--space-1);
+  font: inherit;
+  color: var(--text-faint);
+  cursor: pointer;
+  transition: color var(--dur-base) var(--ease);
+}
+
+.stepButton:hover {
+  color: var(--text);
+}
+
+/* Reserva a linha mesmo vazia, para a tela não pular quando a dica surge. */
+.hint {
+  min-height: calc(var(--size-sm) * var(--leading-body));
+  margin: 0 0 var(--space-2);
+  font-size: var(--size-sm);
+  color: var(--text-muted);
+}
+
 .field {
   border: 0;
   border-bottom: var(--hairline) solid var(--line-strong);

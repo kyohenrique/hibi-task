@@ -34,6 +34,33 @@ export function isValidMinutes(minutes: number): boolean {
   );
 }
 
+/** O passo do stepper de minutos da UI. */
+export const STEP_MINUTES = 5;
+
+/**
+ * Próximo valor do stepper: anda na grade de 5 em 5 e, se o valor atual
+ * está fora dela (o usuário digitou 7), "imanta" para o múltiplo mais
+ * próximo na direção do movimento — subir de 7 vai a 10, descer vai a 5.
+ * De quebra, isso conserta valores digitados fora dos limites.
+ *
+ * O resultado fica entre 0 e MAX_MINUTES: o 0 é permitido de propósito,
+ * por ser o estado de descanso do campo (não dá para iniciar com ele,
+ * mas dá para voltar até ele).
+ */
+export function stepMinutes(current: number, direction: 1 | -1): number {
+  const base = Number.isFinite(current) ? current : 0;
+
+  // floor/ceil escolhidos por direção fazem o alinhamento à grade:
+  // subir de um valor já alinhado soma um passo inteiro (5 → 10);
+  // subir de um quebrado apenas completa o passo em curso (7 → 10).
+  const stepped =
+    direction === 1
+      ? (Math.floor(base / STEP_MINUTES) + 1) * STEP_MINUTES
+      : (Math.ceil(base / STEP_MINUTES) - 1) * STEP_MINUTES;
+
+  return clamp(stepped, 0, MAX_MINUTES);
+}
+
 function clamp(value: number, min: number, max: number): number {
   return Math.min(Math.max(value, min), max);
 }

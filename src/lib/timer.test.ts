@@ -8,6 +8,7 @@ import {
   isValidMinutes,
   progress,
   remainingMs,
+  stepMinutes,
   stopTask,
 } from './timer';
 import type { CompletedTask, RunningTask, StoppedTask } from './types';
@@ -87,6 +88,34 @@ describe('isValidMinutes', () => {
     expect(isValidMinutes(MAX_MINUTES + 1)).toBe(false);
     expect(isValidMinutes(25.5)).toBe(false);
     expect(isValidMinutes(NaN)).toBe(false);
+  });
+});
+
+describe('stepMinutes', () => {
+  it('anda de 5 em 5 a partir de valores alinhados', () => {
+    expect(stepMinutes(0, 1)).toBe(5);
+    expect(stepMinutes(5, 1)).toBe(10);
+    expect(stepMinutes(10, -1)).toBe(5);
+    expect(stepMinutes(5, -1)).toBe(0);
+  });
+
+  it('imanta valores fora da grade para o múltiplo na direção do clique', () => {
+    expect(stepMinutes(7, 1)).toBe(10);
+    expect(stepMinutes(7, -1)).toBe(5);
+    expect(stepMinutes(178, 1)).toBe(180);
+  });
+
+  it('respeita os limites 0 e MAX_MINUTES', () => {
+    expect(stepMinutes(0, -1)).toBe(0);
+    expect(stepMinutes(MAX_MINUTES, 1)).toBe(MAX_MINUTES);
+    // valores digitados fora do teto voltam para dentro
+    expect(stepMinutes(999, -1)).toBe(MAX_MINUTES);
+    expect(stepMinutes(999, 1)).toBe(MAX_MINUTES);
+  });
+
+  it('trata entradas não numéricas como 0', () => {
+    expect(stepMinutes(NaN, 1)).toBe(5);
+    expect(stepMinutes(NaN, -1)).toBe(0);
   });
 });
 
