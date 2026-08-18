@@ -29,9 +29,11 @@
   --ink-3: #4a4740;
   --ink-4: #8a857a;
 
-  /* Shu 朱 — vermelhão de carimbo. Mais azulado e quente que terracota. */
-  --shu-light: #c3352a;
-  --shu-dark: #de5647;
+  /* Shu 朱 — vermelhão de carimbo. Mais azulado e quente que terracota.
+     Os tons foram calibrados para o texto sobre o cartão passar no
+     contraste mínimo de 4.5:1 sem deixar de ser o mesmo vermelhão. */
+  --shu-light: #bc3227;
+  --shu-dark: #e05b4c;
 }
 
 /* --------------------------------------------------------------------------
@@ -46,9 +48,12 @@
   --surface: var(--paper-1);
   --surface-sunken: var(--paper-2);
 
+  /* Três níveis de tinta, todos legíveis sobre o cartão (contraste de
+     13.4, 6.3 e 4.6 para 1). O tom mais claro custou o mínimo da norma:
+     abaixo de 4.5 a navegação e os atalhos ficavam difíceis de ler. */
   --text: var(--ink-1);
-  --text-muted: #6b665c;
-  --text-faint: #918b7f;
+  --text-muted: #55514a;
+  --text-faint: #6b665c;
 
   --line: rgba(31, 30, 25, 0.1);
   --line-strong: rgba(31, 30, 25, 0.2);
@@ -58,15 +63,18 @@
 
   /* O acento só aparece enquanto o tempo corre. Ver nota no fim do arquivo. */
   --accent: var(--shu-light);
-  --accent-quiet: rgba(195, 53, 42, 0.14);
+  --accent-quiet: rgba(188, 50, 39, 0.14);
 
   /* Status — dessaturados para a tabela do histórico ficar quieta.
      Só --status-running toma emprestado o acento. */
   --status-running: var(--shu-light);
-  --status-done: #5c7a5e;
-  --status-stopped: #918b7f;
+  --status-done: #4f6b51;
+  --status-stopped: #6b665c;
 
-  --focus-ring: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent);
+  /* O anel de foco é tinta, não acento: um anel vermelho apareceria com
+     o timer parado e quebraria a regra da cor. O vão interno usa
+     --surface porque tudo que recebe foco vive dentro do cartão. */
+  --focus-ring: 0 0 0 2px var(--surface), 0 0 0 4px var(--text);
 }
 
 [data-theme='sumi'] {
@@ -77,8 +85,8 @@
   --surface-sunken: #0d0d0a;
 
   --text: #ede8da;
-  --text-muted: #9a9385;
-  --text-faint: #6f6a5f;
+  --text-muted: #a69f91;
+  --text-faint: #8b857a;
 
   --line: rgba(237, 232, 218, 0.11);
   --line-strong: rgba(237, 232, 218, 0.22);
@@ -86,13 +94,13 @@
   --overlay: rgba(0, 0, 0, 0.5);
 
   --accent: var(--shu-dark);
-  --accent-quiet: rgba(222, 86, 71, 0.18);
+  --accent-quiet: rgba(224, 91, 76, 0.18);
 
   --status-running: var(--shu-dark);
-  --status-done: #7fa382;
-  --status-stopped: #6f6a5f;
+  --status-done: #8cb08f;
+  --status-stopped: #8b857a;
 
-  --focus-ring: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent);
+  --focus-ring: 0 0 0 2px var(--surface), 0 0 0 4px var(--text);
 }
 
 /* --------------------------------------------------------------------------
