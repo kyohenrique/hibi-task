@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Shippori_Mincho, Zen_Kaku_Gothic_New } from "next/font/google";
 import { Topbar } from "@/components/Topbar";
+import { TasksProvider } from "@/state/tasks";
 import "@/styles/tokens.css";
 
 /*
@@ -54,8 +55,15 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body>
         <script dangerouslySetInnerHTML={{ __html: themeInit }} />
-        <Topbar />
-        <main>{children}</main>
+        {/*
+          O provider é um Client Component, mas o que ele envolve continua
+          sendo renderizado no servidor: Server Components podem ser
+          passados como children de um Client Component sem "virar" client.
+        */}
+        <TasksProvider>
+          <Topbar />
+          <main>{children}</main>
+        </TasksProvider>
       </body>
     </html>
   );

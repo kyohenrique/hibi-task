@@ -1,0 +1,95 @@
+.stage {
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding: var(--space-16) var(--space-4) var(--space-8);
+  text-align: center;
+}
+
+.intent {
+  font-size: var(--size-md);
+  color: var(--text-muted);
+  margin: 0 0 var(--space-2);
+}
+
+.field {
+  border: 0;
+  border-bottom: var(--hairline) solid var(--line-strong);
+  background: none;
+  font: inherit;
+  color: var(--text);
+  text-align: center;
+  padding: var(--space-1) var(--space-2);
+}
+
+.fieldTask {
+  width: 14rem;
+}
+
+.fieldMinutes {
+  width: 3.5rem;
+  font-variant-numeric: tabular-nums;
+  /* esconde as setinhas do input numérico — ruído para este design */
+  appearance: textfield;
+}
+
+.fieldMinutes::-webkit-inner-spin-button,
+.fieldMinutes::-webkit-outer-spin-button {
+  appearance: none;
+}
+
+.pomodoro {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  font-size: var(--size-sm);
+  color: var(--text-faint);
+  cursor: pointer;
+  transition: color var(--dur-base) var(--ease);
+}
+
+.pomodoro:hover {
+  color: var(--text);
+}
+
+.taskName {
+  display: block;
+  margin-bottom: var(--space-6);
+}
+
+.clock {
+  display: block;
+  margin: var(--space-12) 0;
+}
+
+.stroke {
+  margin-bottom: var(--space-12);
+}
+
+.action {
+  display: block;
+  width: 100%;
+  padding: var(--space-3);
+  background: none;
+  border: var(--hairline) solid var(--line-strong);
+  border-radius: var(--radius);
+  font-family: var(--font-ui);
+  font-size: var(--size-md);
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color var(--dur-base) var(--ease),
+    color var(--dur-base) var(--ease),
+    opacity var(--dur-base) var(--ease);
+}
+
+.action:disabled {
+  color: var(--text-faint);
+  cursor: default;
+  opacity: 0.6;
+}
+
+/* O único lugar da tela onde o acento aparece — e só existe rodando. */
+.actionStop {
+  border-color: var(--accent);
+  color: var(--accent);
+}

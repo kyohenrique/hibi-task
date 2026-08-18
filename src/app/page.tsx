@@ -1,14 +1,9 @@
-import styles from "./page.module.css";
+import { TimerScreen } from "@/components/TimerScreen";
 
 /*
- * Página do timer. Por enquanto é um marcador de posição — a tela de
- * verdade (intenção, relógio, traço de progresso) chega na etapa 2.
+ * A página é só a casca da rota: a tela de verdade mora em components/.
+ * Isso mantém o padrão do projeto — páginas montam, componentes fazem.
  */
 export default function TimerPage() {
-  return (
-    <section className={styles.stage}>
-      <span className="eyebrow">timer</span>
-      <p className={styles.placeholder}>em construção</p>
-    </section>
-  );
+  return <TimerScreen />;
 }
