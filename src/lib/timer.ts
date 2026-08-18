@@ -1,0 +1,63 @@
+import type { CompletedTask, RunningTask, StoppedTask, Task } from './types';
+
+/*
+ * A regra de ouro do timer: ele CALCULA, não conta.
+ *
+ * Nada aqui guarda "tempo restante". Uma tarefa sabe apenas quando começou
+ * (`startedAt`) e quanto deveria durar (`plannedMs`); todo o resto é
+ * derivado do relógio de quem pergunta — o parâmetro `now`. Isso torna o
+ * timer imune a F5, troca de página e abas em segundo plano, e torna estas
+ * funções puras: mesmo input, mesmo output, fáceis de testar sem React.
+ *
+ * `now` é sempre um parâmetro (em vez de chamar Date.now() aqui dentro)
+ * exatamente por isso — nos testes, o "agora" é um número qualquer.
+ */
+
+/** Um minuto em milissegundos — a unidade que a UI usa para criar tarefas. */
+export const MINUTE_MS = 60_000;
+
+function clamp(value: number, min: number, max: number): number {
+  return Math.min(Math.max(value, min), max);
+}
+
+/** Quanto da tarefa já foi cumprido, em ms — nunca além do planejado. */
+export function elapsedMs(task: Task, now: number): number {
+  switch (task.status) {
+    case 'running':
+      return clamp(now - task.startedAt, 0, task.plannedMs);
+    case 'stopped':
+      return task.elapsedMs;
+    case 'completed':
+      return task.plannedMs;
+  }
+}
+
+/** Quanto falta, em ms. Zero para concluídas e para o tempo esgotado. */
+export function remainingMs(task: Task, now: number): number {
+  return task.plannedMs - elapsedMs(task, now);
+}
+
+/** Fração cumprida, de 0 a 1 — alimenta o traço de progresso. */
+export function progress(task: Task, now: number): number {
+  if (task.plannedMs <= 0) return 1;
+  return elapsedMs(task, now) / task.plannedMs;
+}
+
+/** O tempo planejado já passou por inteiro? */
+export function isExpired(task: RunningTask, now: number): boolean {
+  return now - task.startedAt >= task.plannedMs;
+}
+
+/** Transição running → stopped, registrando até onde a tarefa foi. */
+export function stopTask(task: RunningTask, now: number): StoppedTask {
+  return {
+    ...task,
+    status: 'stopped',
+    elapsedMs: clamp(now - task.startedAt, 0, task.plannedMs),
+  };
+}
+
+/** Transição running → completed. */
+export function completeTask(task: RunningTask): CompletedTask {
+  return { ...task, status: 'completed' };
+}

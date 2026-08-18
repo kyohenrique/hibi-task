@@ -7,7 +7,7 @@ Timer de tarefas minimalista, 100% client-side: sem backend e sem banco — tudo
 - `npm run dev` — servidor de desenvolvimento
 - `npm run build` — build de produção
 - `npm run lint` — ESLint
-- Testes (Vitest) serão adicionados junto com a primeira lógica pura.
+- `npm run test` — testes (Vitest); `npm run test:watch` para modo contínuo. Só a lógica pura de `src/lib/` é testada.
 
 ## Arquitetura
 
