@@ -13,6 +13,7 @@ import {
   remainingMs,
   stepMinutes,
 } from '@/lib/timer';
+import { primeAudio } from '@/lib/sound';
 import type { RunningTask } from '@/lib/types';
 import { useSettings } from '@/state/settings';
 import { useTasks } from '@/state/tasks';
@@ -50,7 +51,7 @@ export function TimerScreen() {
 
 function SetupView() {
   const { start } = useTasks();
-  const { t } = useSettings();
+  const { t, settings } = useSettings();
 
   /*
    * "Controlled inputs": o valor de cada campo mora no estado do React e
@@ -187,6 +188,9 @@ function SetupView() {
             setAttempted(true);
             return;
           }
+          // O clique de começar é o gesto que "acorda" o áudio: sem isso,
+          // a política de autoplay silenciaria o rin lá no fim do timer.
+          if (settings.sound) primeAudio();
           start(trimmedName, parsedMinutes * MINUTE_MS);
         }}
       >

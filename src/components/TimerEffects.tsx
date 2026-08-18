@@ -1,9 +1,11 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useNow } from '@/hooks/useNow';
 import { formatClock } from '@/lib/format';
+import { playRin } from '@/lib/sound';
 import { isExpired, remainingMs } from '@/lib/timer';
+import { useSettings } from '@/state/settings';
 import { useTasks } from '@/state/tasks';
 
 const DEFAULT_TITLE = 'Hibi Task';
@@ -23,11 +25,27 @@ const DEFAULT_TITLE = 'Hibi Task';
  */
 export function TimerEffects() {
   const { activeTask, complete } = useTasks();
+  const { settings } = useSettings();
   const now = useNow(Boolean(activeTask));
 
+  /*
+   * Guarda contra o fim tocar duas vezes: o ref lembra o id da última
+   * tarefa cujo término já foi tratado. Efeitos podem rodar mais de uma
+   * vez para o mesmo instante (StrictMode, re-renders entre o dispatch e
+   * o novo estado), e o rin não pode "gaguejar" por isso.
+   * A conclusão por RECONCILIAÇÃO (aba fechada) nunca passa por aqui —
+   * ela vira 'completed' antes de existir um activeTask.
+   */
+  const firedRef = useRef<string | null>(null);
+
   useEffect(() => {
-    if (activeTask && isExpired(activeTask, now)) complete();
-  }, [activeTask, now, complete]);
+    if (!activeTask || !isExpired(activeTask, now)) return;
+    if (firedRef.current === activeTask.id) return;
+    firedRef.current = activeTask.id;
+
+    complete();
+    if (settings.sound) playRin();
+  }, [activeTask, now, complete, settings.sound]);
 
   useEffect(() => {
     if (!activeTask) {

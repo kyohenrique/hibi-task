@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { LANGUAGE_NAMES, type Language } from '@/lib/i18n';
+import { playRin, primeAudio } from '@/lib/sound';
 import type { ThemeSetting } from '@/lib/types';
 import { useSettings } from '@/state/settings';
 import { useTasks } from '@/state/tasks';
@@ -111,7 +112,12 @@ export function SettingsModal({ open, onClose }: { open: boolean; onClose: () =>
             className={styles.option}
             aria-pressed={settings.sound}
             onClick={() => {
-              if (!settings.sound) toggleSound();
+              if (settings.sound) return;
+              toggleSound();
+              // O clique é um gesto: acorda o áudio e toca uma prévia —
+              // a pessoa descobre na hora que som acabou de ligar.
+              primeAudio();
+              playRin();
             }}
           >
             {t.soundOn}
