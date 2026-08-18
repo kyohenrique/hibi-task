@@ -1,6 +1,6 @@
 'use client';
 
-import { Fragment, useEffect, useState, type CSSProperties } from 'react';
+import { Fragment, useState, type CSSProperties } from 'react';
 import { useNow } from '@/hooks/useNow';
 import { formatClock } from '@/lib/format';
 import {
@@ -8,7 +8,6 @@ import {
   MIN_MINUTES,
   MINUTE_MS,
   STEP_MINUTES,
-  isExpired,
   isValidMinutes,
   progress,
   remainingMs,
@@ -37,7 +36,12 @@ const PRESETS = [
  * interno — o TimerScreen só decide qual deles está em cena.
  */
 export function TimerScreen() {
-  const { activeTask } = useTasks();
+  const { activeTask, hydrated } = useTasks();
+
+  // Antes de o localStorage ser lido não dá para saber se há um timer
+  // rodando salvo; renderizar o formulário nesse meio-tempo faria a tela
+  // piscar. Um frame em branco é invisível; a troca errada não seria.
+  if (!hydrated) return null;
 
   return activeTask ? <RunningView task={activeTask} /> : <SetupView />;
 }
@@ -192,19 +196,12 @@ function SetupView() {
 }
 
 function RunningView({ task }: { task: RunningTask }) {
-  const { stop, complete } = useTasks();
+  const { stop } = useTasks();
   const now = useNow();
 
-  /*
-   * O efeito-vigia da conclusão: a cada tick o componente re-renderiza
-   * com um `now` novo e este efeito reavalia se o tempo acabou. Marcar a
-   * conclusão é um "efeito colateral" da renderização — mudar estado no
-   * meio do render é proibido no React, e é para isso que useEffect existe.
-   */
-  useEffect(() => {
-    if (isExpired(task, now)) complete();
-  }, [task, now, complete]);
-
+  // A conclusão automática NÃO mora aqui: ela vale para o app inteiro
+  // (inclusive com o usuário no histórico), então vive no TimerEffects,
+  // montado no layout. Esta view só exibe.
   return (
     <section className={styles.stage}>
       <span className={`eyebrow ${styles.taskName}`}>{task.name}</span>

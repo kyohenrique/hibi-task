@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Shippori_Mincho, Zen_Kaku_Gothic_New } from "next/font/google";
+import { TimerEffects } from "@/components/TimerEffects";
 import { Topbar } from "@/components/Topbar";
 import { TasksProvider } from "@/state/tasks";
 import "@/styles/tokens.css";
@@ -61,6 +62,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           passados como children de um Client Component sem "virar" client.
         */}
         <TasksProvider>
+          <TimerEffects />
           <Topbar />
           <main>{children}</main>
         </TasksProvider>
