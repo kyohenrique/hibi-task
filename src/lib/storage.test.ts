@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { parseTasks } from './storage';
-import type { Task } from './types';
+import { parseSettings, parseTasks } from './storage';
+import type { Settings, Task } from './types';
 
 const valid: Task[] = [
   {
@@ -42,5 +42,28 @@ describe('parseTasks', () => {
       valid[1],
     ];
     expect(parseTasks(JSON.stringify(mixed))).toEqual(valid);
+  });
+});
+
+const fallback: Settings = { theme: 'system', language: 'pt', sound: true };
+
+describe('parseSettings', () => {
+  it('aceita ajustes válidos de volta', () => {
+    const saved: Settings = { theme: 'sumi', language: 'en', sound: false };
+    expect(parseSettings(JSON.stringify(saved), fallback)).toEqual(saved);
+  });
+
+  it('devolve o fallback para null e JSON corrompido', () => {
+    expect(parseSettings(null, fallback)).toEqual(fallback);
+    expect(parseSettings('{{{', fallback)).toEqual(fallback);
+  });
+
+  it('valida campo a campo: um campo ruim não derruba os demais', () => {
+    const mixed = { theme: 'neon', language: 'en', sound: 'sim' };
+    expect(parseSettings(JSON.stringify(mixed), fallback)).toEqual({
+      theme: 'system', // inválido → fallback
+      language: 'en', // válido → preservado
+      sound: true, // inválido → fallback
+    });
   });
 });

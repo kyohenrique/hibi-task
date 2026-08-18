@@ -1,4 +1,4 @@
-import type { Task } from './types';
+import type { Settings, Task } from './types';
 
 /*
  * A ponte com o localStorage — o único lugar do app que fala com ele.
@@ -74,5 +74,54 @@ export function saveTasks(tasks: Task[]): void {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
   } catch {
     // storage cheio ou bloqueado: o app segue funcionando só em memória
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Ajustes — chave própria, porque mudam num ritmo diferente das tarefas.
+   -------------------------------------------------------------------------- */
+
+const SETTINGS_KEY = 'hibi.settings.v1';
+
+/**
+ * Diferente do parse de tarefas (que descarta itens inteiros), aqui a
+ * validação é campo a campo: um tema inválido no JSON não derruba o
+ * idioma salvo ao lado — cada campo ruim volta sozinho para o fallback.
+ */
+export function parseSettings(raw: string | null, fallback: Settings): Settings {
+  if (!raw) return fallback;
+  try {
+    const data: unknown = JSON.parse(raw);
+    if (typeof data !== 'object' || data === null) return fallback;
+    const s = data as Record<string, unknown>;
+
+    return {
+      theme:
+        s.theme === 'gofun' || s.theme === 'sumi' || s.theme === 'system'
+          ? s.theme
+          : fallback.theme,
+      language: s.language === 'pt' || s.language === 'en' ? s.language : fallback.language,
+      sound: typeof s.sound === 'boolean' ? s.sound : fallback.sound,
+    };
+  } catch {
+    return fallback;
+  }
+}
+
+export function loadSettings(fallback: Settings): Settings {
+  if (typeof window === 'undefined') return fallback;
+  try {
+    return parseSettings(window.localStorage.getItem(SETTINGS_KEY), fallback);
+  } catch {
+    return fallback;
+  }
+}
+
+export function saveSettings(settings: Settings): void {
+  if (typeof window === 'undefined') return;
+  try {
+    window.localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+  } catch {
+    // sem storage, os ajustes valem só para a sessão atual
   }
 }

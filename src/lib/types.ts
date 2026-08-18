@@ -1,3 +1,5 @@
+import type { Language } from './i18n';
+
 /*
  * O tipo central do app: Task.
  *
@@ -41,3 +43,13 @@ export type Task = RunningTask | StoppedTask | CompletedTask;
 
 /** 'running' | 'stopped' | 'completed', extraído do próprio Task. */
 export type TaskStatus = Task['status'];
+
+/** Os dois temas têm nome próprio; 'system' segue o sistema operacional. */
+export type ThemeSetting = 'gofun' | 'sumi' | 'system';
+
+export interface Settings {
+  theme: ThemeSetting;
+  language: Language;
+  /** O rin ao fim do timer (o som em si chega na etapa das notificações). */
+  sound: boolean;
+}
