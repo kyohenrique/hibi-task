@@ -175,7 +175,24 @@ function SetupView() {
             <button
               type="button"
               className={styles.preset}
-              onClick={() => setMinutes(String(preset.minutes))}
+              onClick={() => {
+                setMinutes(String(preset.minutes));
+                /*
+                 * O atalho também dá o nome — mas nunca por cima do que
+                 * o usuário escreveu. Ele só preenche o campo vazio ou
+                 * substitui um nome que veio de outro atalho, para
+                 * trocar de ideia entre eles funcionar como se espera.
+                 */
+                setName((current) => {
+                  const escrito = current.trim();
+                  const veioDeAtalho = PRESETS.some(
+                    (p) => t[p.labelKey] === escrito,
+                  );
+                  return escrito === '' || veioDeAtalho
+                    ? t[preset.labelKey]
+                    : current;
+                });
+              }}
             >
               {t[preset.labelKey]} {preset.minutes}
             </button>
