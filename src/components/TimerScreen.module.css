@@ -1,9 +1,26 @@
+/* Sem respiro vertical próprio: quem separa a tela das bordas é o
+   cartão, e o <main> já centraliza o conteúdo na altura que sobra. */
 .stage {
   width: 100%;
   max-width: var(--measure);
   margin: 0 auto;
-  padding: var(--space-6) 0;
   text-align: center;
+
+  /* React troca a tela inteira ao iniciar/interromper (e ao navegar),
+     então o elemento é sempre novo e a animação roda a cada entrada.
+     Como o relógio já está cravado no mesmo ponto, nada se desloca — o
+     conteúdo só respira. Com prefers-reduced-motion o token vira 0ms e
+     a animação desaparece sozinha. */
+  animation: appear var(--dur-base) var(--ease);
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 /* O bloco acima do relógio, com altura reservada: em repouso ele guarda
@@ -108,11 +125,11 @@
 
 .clock {
   display: block;
-  margin: var(--space-8) 0;
+  margin: var(--space-6) 0;
 }
 
 .stroke {
-  margin-bottom: var(--space-8);
+  margin-bottom: var(--space-6);
 }
 
 .action {

@@ -9,6 +9,18 @@
   padding: var(--space-4) 0;
   display: flex;
   flex-direction: column;
+
+  /* Mesma entrada suave da tela do timer, ao navegar para cá. */
+  animation: appear var(--dur-base) var(--ease);
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 /* Sem tarefas, a mensagem ocupa o lugar da lista e se centraliza nele. */
