@@ -1,0 +1,82 @@
+.stage {
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding: var(--space-12) var(--space-4) var(--space-8);
+}
+
+.empty {
+  color: var(--text-faint);
+  text-align: center;
+  margin: var(--space-16) 0;
+}
+
+.list {
+  list-style: none;
+  margin: var(--space-6) 0 0;
+  padding: 0;
+}
+
+.item {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  border-bottom: var(--hairline) solid var(--line);
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0; /* permite o nome encolher e reticenciar dentro do grid */
+}
+
+.name {
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.meta {
+  font-size: var(--size-sm);
+  color: var(--text-faint);
+}
+
+.duration {
+  font-size: var(--size-sm);
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.trash {
+  background: none;
+  border: 0;
+  padding: var(--space-1);
+  color: var(--text-faint);
+  cursor: pointer;
+  line-height: 0;
+  transition: color var(--dur-base) var(--ease);
+}
+
+.trash:hover {
+  color: var(--text);
+}
+
+/* Confirmação quieta: exclusão não é "tempo correndo", então nada de
+   acento — só o texto escurecer pedindo o segundo clique. */
+.confirm {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  font-size: var(--size-sm);
+  color: var(--text-muted);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.confirm:hover {
+  color: var(--text);
+}
