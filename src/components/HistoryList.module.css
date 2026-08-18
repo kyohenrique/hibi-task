@@ -1,24 +1,56 @@
+/* Ocupa a altura toda do cartão: o rótulo fica parado no topo e só a
+   lista rola. O min-height: 0 aqui tem o mesmo motivo do layout. */
 .stage {
   width: 100%;
   max-width: var(--measure);
+  height: 100%;
+  min-height: 0;
   margin: 0 auto;
   padding: var(--space-4) 0;
+  display: flex;
+  flex-direction: column;
 }
 
+/* Sem tarefas, a mensagem ocupa o lugar da lista e se centraliza nele. */
 .empty {
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: var(--space-3);
   color: var(--text-faint);
   text-align: center;
-  margin: var(--space-12) 0;
+  margin: 0;
 }
 
+/* A única coisa que rola no app inteiro.
+   O respiro interno (padding vertical) tem exatamente a altura da faixa
+   que dissolve na máscara: no começo da rolagem a faixa está vazia, então
+   nada aparece esmaecido — as linhas só se dissolvem quando entram nela.
+   Sem isso, a primeira tarefa pareceria apagada de propósito. */
 .list {
+  --fade: var(--space-6);
+
   list-style: none;
-  margin: var(--space-6) 0 0;
-  padding: 0;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  margin: var(--space-4) 0 0;
+  padding: var(--fade) 0;
+
+  /* barra fina e apagada: a do sistema seria o elemento mais barulhento
+     de toda a interface */
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
+
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    #000 var(--fade),
+    #000 calc(100% - var(--fade)),
+    transparent 100%
+  );
 }
 
 .item {

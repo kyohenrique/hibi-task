@@ -14,11 +14,17 @@
    fundo (no sumi, tinta um degrau mais clara), borda hairline e respiro
    interno generoso. A altura mínima evita que a troca de página faça o
    cartão pulsar de tamanho. */
+/* Altura FIXA: o cartão é um objeto de tamanho constante, igual no timer
+   e no histórico — quem rola é o conteúdo de dentro, nunca a página.
+   O max-height é a trava para telas baixas: em vez de o cartão furar a
+   janela e trazer a rolagem de volta pela porta dos fundos, ele encolhe. */
 .card {
   width: min(38rem, 100%);
-  min-height: 34rem;
+  height: 34rem;
+  max-height: calc(100dvh - 2 * var(--space-8));
   display: flex;
   flex-direction: column;
+  overflow: hidden;
   background: var(--surface);
   border: var(--hairline) solid var(--line);
   border-radius: var(--radius-lg);
@@ -26,9 +32,14 @@
   transition: background-color var(--dur-slow) var(--ease);
 }
 
-/* O conteúdo da página ocupa o resto do cartão e se centraliza nele. */
+/* O conteúdo da página ocupa o resto do cartão e se centraliza nele.
+   O min-height: 0 é a pegadinha clássica do flexbox: por padrão um
+   filho flex não encolhe abaixo do próprio conteúdo (min-height: auto),
+   e sem isso a rolagem interna do histórico simplesmente não acontece —
+   a lista empurraria o cartão em vez de rolar dentro dele. */
 .card main {
   flex: 1;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   justify-content: center;

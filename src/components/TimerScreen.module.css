@@ -6,6 +6,19 @@
   text-align: center;
 }
 
+/* O bloco acima do relógio, com altura reservada: em repouso ele guarda
+   a frase de intenção, a dica e os atalhos; em andamento, só o nome da
+   tarefa. Medindo o mesmo nos dois estados, o relógio (e o traço, e o
+   botão) ficam cravados no lugar quando o timer começa — a troca de
+   protagonista vira transição, não salto.
+   O conteúdo se alinha por baixo, encostado no relógio. */
+.head {
+  min-height: 8.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
 .intent {
   font-size: var(--size-md);
   color: var(--text-muted);
@@ -91,16 +104,15 @@
 
 .taskName {
   display: block;
-  margin-bottom: var(--space-6);
 }
 
 .clock {
   display: block;
-  margin: var(--space-12) 0;
+  margin: var(--space-8) 0;
 }
 
 .stroke {
-  margin-bottom: var(--space-12);
+  margin-bottom: var(--space-8);
 }
 
 .action {

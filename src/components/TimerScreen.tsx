@@ -101,7 +101,14 @@ function SetupView() {
 
   return (
     <section className={styles.stage}>
-      <p className={styles.intent}>
+      {/*
+        Tudo que fica acima do relógio mora num bloco de altura reservada
+        (ver .head no CSS): aqui são três linhas, na tela em andamento é
+        só o nome da tarefa. Como o bloco mede o mesmo nos dois casos, o
+        relógio não pula de lugar quando o timer começa.
+      */}
+      <div className={styles.head}>
+        <p className={styles.intent}>
         {t.intentPrefix}{' '}
         <input
           className={`${styles.field} ${styles.fieldTask}`}
@@ -144,19 +151,19 @@ function SetupView() {
           </button>
         </span>{' '}
         {t.intentUnit}
-      </p>
+        </p>
 
-      {/*
-        aria-live="polite": leitores de tela anunciam a dica quando ela
-        surge, sem interromper o que estiverem lendo. O elemento existe
-        sempre (com min-height no CSS) para o layout não pular.
-      */}
-      <p className={styles.hint} aria-live="polite">
-        {hint}
-      </p>
+        {/*
+          aria-live="polite": leitores de tela anunciam a dica quando ela
+          surge, sem interromper o que estiverem lendo. O elemento existe
+          sempre (com min-height no CSS) para o layout não pular.
+        */}
+        <p className={styles.hint} aria-live="polite">
+          {hint}
+        </p>
 
-      {/* Atalhos: só preenchem o campo. Começar continua sendo um ato seu. */}
-      <div className={styles.presets}>
+        {/* Atalhos: só preenchem o campo. Começar continua sendo um ato seu. */}
+        <div className={styles.presets}>
         {PRESETS.map((preset, i) => (
           // Fragment com key: agrupa botão + separador sem criar nós extras
           <Fragment key={preset.minutes}>
@@ -170,6 +177,7 @@ function SetupView() {
             </button>
           </Fragment>
         ))}
+        </div>
       </div>
 
       <span className={`clock ${styles.clock}`}>{formatClock(previewMs)}</span>
@@ -215,7 +223,10 @@ function RunningView({ task }: { task: RunningTask }) {
   // montado no layout. Esta view só exibe.
   return (
     <section className={styles.stage}>
-      <span className={`eyebrow ${styles.taskName}`}>{task.name}</span>
+      {/* Mesmo bloco reservado da tela de repouso — ver .head no CSS. */}
+      <div className={styles.head}>
+        <span className={`eyebrow ${styles.taskName}`}>{task.name}</span>
+      </div>
 
       <span className={`clock ${styles.clock}`}>
         {formatClock(remainingMs(task, now))}
