@@ -106,3 +106,15 @@ export function stopTask(task: RunningTask, now: number): StoppedTask {
 export function completeTask(task: RunningTask): CompletedTask {
   return { ...task, status: 'completed' };
 }
+
+/**
+ * Reconciliação de carga: tarefa que ficou rodando com a aba fechada e
+ * cujo tempo já acabou é marcada como concluída. As demais passam
+ * intactas — uma rodando dentro do prazo simplesmente retoma do ponto
+ * certo, porque tudo é derivado de startedAt.
+ */
+export function reconcileTasks(tasks: Task[], now: number): Task[] {
+  return tasks.map((t) =>
+    t.status === 'running' && isExpired(t, now) ? completeTask(t) : t,
+  );
+}

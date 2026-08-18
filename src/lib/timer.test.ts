@@ -7,6 +7,7 @@ import {
   isExpired,
   isValidMinutes,
   progress,
+  reconcileTasks,
   remainingMs,
   stepMinutes,
   stopTask,
@@ -88,6 +89,26 @@ describe('isValidMinutes', () => {
     expect(isValidMinutes(MAX_MINUTES + 1)).toBe(false);
     expect(isValidMinutes(25.5)).toBe(false);
     expect(isValidMinutes(NaN)).toBe(false);
+  });
+});
+
+describe('reconcileTasks', () => {
+  it('conclui a rodando cujo tempo acabou com a aba fechada', () => {
+    const now = START + 30 * MINUTE_MS; // 5 min além do fim
+    expect(reconcileTasks([running], now)).toEqual([
+      { ...running, status: 'completed' },
+    ]);
+  });
+
+  it('não mexe na rodando dentro do prazo nem nas encerradas', () => {
+    const stopped: StoppedTask = {
+      ...running,
+      id: 'b',
+      status: 'stopped',
+      elapsedMs: 5 * MINUTE_MS,
+    };
+    const now = START + 10 * MINUTE_MS;
+    expect(reconcileTasks([running, stopped], now)).toEqual([running, stopped]);
   });
 });
 
