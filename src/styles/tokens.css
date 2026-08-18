@@ -53,6 +53,9 @@
   --line: rgba(31, 30, 25, 0.1);
   --line-strong: rgba(31, 30, 25, 0.2);
 
+  /* Véu atrás de modais (::backdrop) — tinta diluída sobre o papel. */
+  --overlay: rgba(31, 30, 25, 0.3);
+
   /* O acento só aparece enquanto o tempo corre. Ver nota no fim do arquivo. */
   --accent: var(--shu-light);
   --accent-quiet: rgba(195, 53, 42, 0.14);
@@ -79,6 +82,8 @@
 
   --line: rgba(237, 232, 218, 0.11);
   --line-strong: rgba(237, 232, 218, 0.22);
+
+  --overlay: rgba(0, 0, 0, 0.5);
 
   --accent: var(--shu-dark);
   --accent-quiet: rgba(222, 86, 71, 0.18);

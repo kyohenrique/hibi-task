@@ -1,0 +1,93 @@
+.dialog {
+  /* o dialog nativo vem com estilos de user-agent; zera e assume */
+  margin: auto;
+  border: var(--hairline) solid var(--line-strong);
+  border-radius: var(--radius);
+  padding: var(--space-6);
+  width: min(20rem, calc(100vw - 2 * var(--space-4)));
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: var(--size-md);
+}
+
+.dialog::backdrop {
+  background: var(--overlay);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-6);
+}
+
+.close {
+  background: none;
+  border: 0;
+  padding: 0 var(--space-1);
+  font: inherit;
+  font-size: var(--size-lg);
+  line-height: 1;
+  color: var(--text-faint);
+  cursor: pointer;
+  transition: color var(--dur-base) var(--ease);
+}
+
+.close:hover {
+  color: var(--text);
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-4);
+  padding: var(--space-3) 0;
+  border-top: var(--hairline) solid var(--line);
+}
+
+.rowLabel {
+  font-size: var(--size-sm);
+  color: var(--text-muted);
+}
+
+.options {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.option {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  font-size: var(--size-sm);
+  color: var(--text-faint);
+  cursor: pointer;
+  transition: color var(--dur-base) var(--ease);
+}
+
+.option:hover {
+  color: var(--text);
+}
+
+/* A opção ativa em tinta cheia — sem cor: escolher tema não é tempo correndo. */
+.option[aria-pressed='true'] {
+  color: var(--text);
+}
+
+.clear {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  font-size: var(--size-sm);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color var(--dur-base) var(--ease);
+}
+
+.clear:hover {
+  color: var(--text);
+}

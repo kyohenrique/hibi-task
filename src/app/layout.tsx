@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Shippori_Mincho, Zen_Kaku_Gothic_New } from "next/font/google";
 import { TimerEffects } from "@/components/TimerEffects";
 import { Topbar } from "@/components/Topbar";
+import { SettingsProvider } from "@/state/settings";
 import { TasksProvider } from "@/state/tasks";
 import "@/styles/tokens.css";
 
@@ -33,12 +34,22 @@ export const metadata: Metadata = {
 };
 
 /*
- * Roda antes do primeiro paint para o tema certo já nascer aplicado,
- * sem piscar o tema errado. Por enquanto segue o sistema; na etapa dos
- * ajustes este script passará a priorizar a preferência salva do usuário.
+ * Roda antes do primeiro paint para o tema certo já nascer aplicado, sem
+ * piscar o tema errado: primeiro tenta a preferência salva nos ajustes;
+ * sem ela (ou com ela em "system"), cai no tema do sistema operacional.
+ * Depois da hidratação, o efeito do SettingsProvider assume o controle.
  */
-const themeInit = `document.documentElement.dataset.theme =
-  window.matchMedia("(prefers-color-scheme: dark)").matches ? "sumi" : "gofun";`;
+const themeInit = `(function () {
+  var theme = "system";
+  try {
+    var saved = JSON.parse(localStorage.getItem("hibi.settings.v1"));
+    if (saved && (saved.theme === "gofun" || saved.theme === "sumi")) theme = saved.theme;
+  } catch (e) {}
+  if (theme === "system") {
+    theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "sumi" : "gofun";
+  }
+  document.documentElement.dataset.theme = theme;
+})();`;
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
@@ -61,11 +72,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           sendo renderizado no servidor: Server Components podem ser
           passados como children de um Client Component sem "virar" client.
         */}
-        <TasksProvider>
-          <TimerEffects />
-          <Topbar />
-          <main>{children}</main>
-        </TasksProvider>
+        <SettingsProvider>
+          <TasksProvider>
+            <TimerEffects />
+            <Topbar />
+            <main>{children}</main>
+          </TasksProvider>
+        </SettingsProvider>
       </body>
     </html>
   );

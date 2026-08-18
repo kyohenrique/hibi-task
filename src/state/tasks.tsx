@@ -40,7 +40,8 @@ type TasksAction =
   | { type: 'start'; task: RunningTask }
   | { type: 'stop'; now: number }
   | { type: 'complete' }
-  | { type: 'remove'; id: string };
+  | { type: 'remove'; id: string }
+  | { type: 'clear' };
 
 /*
  * O reducer precisa ser uma função pura — mesmo estado + mesma ação ⇒
@@ -81,6 +82,13 @@ function tasksReducer(state: TasksState, action: TasksAction): TasksState {
           (t) => t.id !== action.id || t.status === 'running',
         ),
       };
+    case 'clear':
+      // Limpa o histórico preservando a tarefa em andamento — mesma
+      // regra da exclusão individual: rodando não se apaga.
+      return {
+        ...state,
+        tasks: state.tasks.filter((t) => t.status === 'running'),
+      };
   }
 }
 
@@ -94,6 +102,8 @@ interface TasksContextValue {
   stop: () => void;
   complete: () => void;
   remove: (id: string) => void;
+  /** Limpa o histórico (tarefas encerradas); a em andamento sobrevive. */
+  clearFinished: () => void;
 }
 
 const TasksContext = createContext<TasksContextValue | null>(null);
@@ -154,6 +164,7 @@ export function TasksProvider({ children }: { children: ReactNode }) {
     stop: () => dispatch({ type: 'stop', now: Date.now() }),
     complete: () => dispatch({ type: 'complete' }),
     remove: (id) => dispatch({ type: 'remove', id }),
+    clearFinished: () => dispatch({ type: 'clear' }),
   };
 
   // React 19 permite usar o próprio Context como provider,
