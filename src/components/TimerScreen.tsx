@@ -55,15 +55,37 @@ function SetupView() {
   // Começa em 0 de propósito: escolher a duração é um ato do usuário
   // (digitando, num atalho ou no stepper), não um padrão herdado.
   const [minutes, setMinutes] = useState('0');
+  // O usuário já tentou começar? Antes da primeira tentativa, a tela em
+  // repouso fica quieta; depois dela, as dicas de "falta algo" acendem e
+  // se atualizam sozinhas conforme os campos forem preenchidos.
+  const [attempted, setAttempted] = useState(false);
 
+  const trimmedName = name.trim();
   const parsedMinutes = Number(minutes);
   const validMinutes = isValidMinutes(parsedMinutes);
-  const canStart = name.trim().length > 0 && validMinutes;
+  const missingName = trimmedName.length === 0;
+  const canStart = !missingName && validMinutes;
 
   // O 0 (ou o campo vazio) é o estado de DESCANSO, não um erro: a dica de
-  // validação só aparece quando o usuário digitou algo fora dos limites.
+  // limites só aparece quando o usuário digitou algo fora deles.
   const resting = minutes.trim() === '' || parsedMinutes === 0;
-  const showHint = !resting && !validMinutes;
+  const typedInvalid = !resting && !validMinutes;
+
+  /*
+   * Uma única linha de dica, uma mensagem por vez — a mais acionável.
+   * A de limites tem vida própria (aparece enquanto se digita); as de
+   * "falta algo" só existem depois de uma tentativa de começar.
+   */
+  let hint = '';
+  if (attempted && missingName) {
+    hint = resting
+      ? 'dê um nome à tarefa e escolha a duração'
+      : 'dê um nome à tarefa para começar';
+  } else if (typedInvalid) {
+    hint = `use um valor inteiro entre ${MIN_MINUTES} e ${MAX_MINUTES} minutos`;
+  } else if (attempted && resting) {
+    hint = 'escolha a duração para começar';
+  }
 
   const previewMs = validMinutes ? parsedMinutes * MINUTE_MS : 0;
 
@@ -120,9 +142,7 @@ function SetupView() {
         sempre (com min-height no CSS) para o layout não pular.
       */}
       <p className={styles.hint} aria-live="polite">
-        {showHint
-          ? `use um valor inteiro entre ${MIN_MINUTES} e ${MAX_MINUTES} minutos`
-          : ''}
+        {hint}
       </p>
 
       {/* Atalhos: só preenchem o campo. Começar continua sendo um ato seu. */}
@@ -146,11 +166,24 @@ function SetupView() {
 
       <div className={`stroke ${styles.stroke}`} />
 
+      {/*
+        aria-disabled em vez de disabled: o botão continua focável por
+        teclado e visível a leitores de tela (que o anunciam como
+        indisponível), e o clique RESPONDE — acende a dica do que falta —
+        em vez de ser um beco sem saída mudo. `disabled` de verdade
+        removeria o botão da navegação e engoliria o clique.
+      */}
       <button
         type="button"
         className={styles.action}
-        disabled={!canStart}
-        onClick={() => start(name.trim(), parsedMinutes * MINUTE_MS)}
+        aria-disabled={!canStart}
+        onClick={() => {
+          if (!canStart) {
+            setAttempted(true);
+            return;
+          }
+          start(trimmedName, parsedMinutes * MINUTE_MS);
+        }}
       >
         começar
       </button>
