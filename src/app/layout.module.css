@@ -5,6 +5,9 @@
   display: grid;
   place-items: center;
   padding: var(--space-8) var(--space-4);
+  /* acima do fundo, abaixo da camada de pétalas (que cai na frente) */
+  position: relative;
+  z-index: 1;
 }
 
 /* O cartão onde o app inteiro vive: papel um degrau mais fundo que o

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Shippori_Mincho, Zen_Kaku_Gothic_New } from "next/font/google";
+import { Petals } from "@/components/Petals";
 import { TimerEffects } from "@/components/TimerEffects";
 import { Topbar } from "@/components/Topbar";
 import { SettingsProvider } from "@/state/settings";
@@ -76,6 +77,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <SettingsProvider>
           <TasksProvider>
             <TimerEffects />
+            <Petals />
             <div className={styles.frame}>
               <div className={styles.card}>
                 <Topbar />
