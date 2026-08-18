@@ -102,6 +102,7 @@ export function parseSettings(raw: string | null, fallback: Settings): Settings 
           : fallback.theme,
       language: s.language === 'pt' || s.language === 'en' ? s.language : fallback.language,
       sound: typeof s.sound === 'boolean' ? s.sound : fallback.sound,
+      notify: typeof s.notify === 'boolean' ? s.notify : fallback.notify,
     };
   } catch {
     return fallback;

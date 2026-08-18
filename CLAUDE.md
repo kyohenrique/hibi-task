@@ -34,7 +34,8 @@ Diretórios ainda inexistentes são criados conforme as etapas do projeto avanç
 - **Atalhos rápidos** (respiro 5 · pausa 15 · pomodoro 25) só preenchem os minutos; nunca iniciam o timer sozinhos.
 - **Duração limitada**: inteiro entre `MIN_MINUTES` (1) e `MAX_MINUTES` (180), constantes de `lib/timer.ts` — teto de produto (sessões de foco, não turnos), única fonte da verdade para formulário e validação.
 - **i18n sem biblioteca**: dicionário TypeScript em `lib/i18n.ts` (pt/en), escolha salva nos ajustes. Sem rotas por locale. Para adicionar uma string: criar a chave no dicionário `pt` (a fonte da verdade) — o compilador exige a tradução em `en`, porque `en` é tipado como `typeof pt`.
-- **Notificação**: pedir permissão apenas quando o usuário ligar a opção, nunca no carregamento.
+- **Notificação**: pedir permissão apenas quando o usuário ligar a opção, nunca no carregamento. Dispara só com a aba fora de vista ou a janela sem foco.
+- **Som**: o rin é sintetizado via Web Audio em `lib/sound.ts` — não há assets de áudio no repo. Áudio precisa nascer de gesto do usuário (`primeAudio()` nos cliques de começar e de ligar o som).
 - Persistência em `localStorage` sob chaves versionadas (`hibi.v1` para tarefas, `hibi.settings.v1` para ajustes), com parse defensivo.
 
 ## Convenções

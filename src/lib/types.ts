@@ -50,6 +50,8 @@ export type ThemeSetting = 'gofun' | 'sumi' | 'system';
 export interface Settings {
   theme: ThemeSetting;
   language: Language;
-  /** O rin ao fim do timer (o som em si chega na etapa das notificações). */
+  /** O rin ao fim do timer. */
   sound: boolean;
+  /** Notificação do navegador ao fim do timer (exige permissão dada). */
+  notify: boolean;
 }

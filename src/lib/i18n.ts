@@ -73,7 +73,11 @@ const pt = {
   soundLabel: 'som',
   soundOn: 'ligado',
   soundOff: 'desligado',
+  notifyLabel: 'notificação',
   clearHistory: 'limpar histórico',
+
+  // notificação do navegador
+  notificationDone: (name: string) => `"${name}" concluída`,
 
   // durações e datas
   lessThanMinute: 'menos de 1 min',
@@ -129,7 +133,10 @@ const en: Dictionary = {
   soundLabel: 'sound',
   soundOn: 'on',
   soundOff: 'off',
+  notifyLabel: 'notification',
   clearHistory: 'clear history',
+
+  notificationDone: (name) => `"${name}" completed`,
 
   lessThanMinute: 'less than 1 min',
   months: [

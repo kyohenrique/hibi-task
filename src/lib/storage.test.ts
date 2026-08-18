@@ -45,11 +45,21 @@ describe('parseTasks', () => {
   });
 });
 
-const fallback: Settings = { theme: 'system', language: 'pt', sound: true };
+const fallback: Settings = {
+  theme: 'system',
+  language: 'pt',
+  sound: true,
+  notify: false,
+};
 
 describe('parseSettings', () => {
   it('aceita ajustes válidos de volta', () => {
-    const saved: Settings = { theme: 'sumi', language: 'en', sound: false };
+    const saved: Settings = {
+      theme: 'sumi',
+      language: 'en',
+      sound: false,
+      notify: true,
+    };
     expect(parseSettings(JSON.stringify(saved), fallback)).toEqual(saved);
   });
 
@@ -64,6 +74,7 @@ describe('parseSettings', () => {
       theme: 'system', // inválido → fallback
       language: 'en', // válido → preservado
       sound: true, // inválido → fallback
+      notify: false, // ausente → fallback
     });
   });
 });

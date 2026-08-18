@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { LANGUAGE_NAMES, type Language } from '@/lib/i18n';
+import { requestNotifyPermission } from '@/lib/notify';
 import { playRin, primeAudio } from '@/lib/sound';
 import type { ThemeSetting } from '@/lib/types';
 import { useSettings } from '@/state/settings';
@@ -24,7 +25,8 @@ const LANGUAGES: Language[] = ['pt', 'en'];
  */
 export function SettingsModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const { settings, t, setTheme, setLanguage, toggleSound } = useSettings();
+  const { settings, t, setTheme, setLanguage, toggleSound, setNotify } =
+    useSettings();
   const { clearFinished } = useTasks();
 
   const [confirmingClear, setConfirmingClear] = useState(false);
@@ -129,6 +131,36 @@ export function SettingsModal({ open, onClose }: { open: boolean; onClose: () =>
             onClick={() => {
               if (settings.sound) toggleSound();
             }}
+          >
+            {t.soundOff}
+          </button>
+        </div>
+      </div>
+
+      <div className={styles.row}>
+        <span className={styles.rowLabel}>{t.notifyLabel}</span>
+        <div className={styles.options}>
+          {/*
+            Ligar é assíncrono: primeiro o navegador pergunta ao usuário
+            (só neste momento — regra do produto) e o toggle só liga se a
+            permissão vier. Negou? O botão simplesmente não acende.
+          */}
+          <button
+            type="button"
+            className={styles.option}
+            aria-pressed={settings.notify}
+            onClick={async () => {
+              if (settings.notify) return;
+              if (await requestNotifyPermission()) setNotify(true);
+            }}
+          >
+            {t.soundOn}
+          </button>
+          <button
+            type="button"
+            className={styles.option}
+            aria-pressed={!settings.notify}
+            onClick={() => setNotify(false)}
           >
             {t.soundOff}
           </button>

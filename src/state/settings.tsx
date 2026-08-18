@@ -33,7 +33,12 @@ type SettingsAction =
  * (dentro do efeito): antes dela, o servidor e o primeiro render usam o
  * mesmo default fixo — a regra de sempre contra o hydration mismatch.
  */
-const DEFAULTS: Settings = { theme: 'system', language: 'pt', sound: true };
+const DEFAULTS: Settings = {
+  theme: 'system',
+  language: 'pt',
+  sound: true,
+  notify: false,
+};
 
 function settingsReducer(state: SettingsState, action: SettingsAction): SettingsState {
   switch (action.type) {
@@ -53,6 +58,7 @@ interface SettingsContextValue {
   setTheme: (theme: ThemeSetting) => void;
   setLanguage: (language: Language) => void;
   toggleSound: () => void;
+  setNotify: (notify: boolean) => void;
 }
 
 const SettingsContext = createContext<SettingsContextValue | null>(null);
@@ -115,6 +121,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     setLanguage: (language) => dispatch({ type: 'patch', patch: { language } }),
     toggleSound: () =>
       dispatch({ type: 'patch', patch: { sound: !state.settings.sound } }),
+    setNotify: (notify) => dispatch({ type: 'patch', patch: { notify } }),
   };
 
   return <SettingsContext value={value}>{children}</SettingsContext>;

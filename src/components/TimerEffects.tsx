@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react';
 import { useNow } from '@/hooks/useNow';
 import { formatClock } from '@/lib/format';
+import { notifyCompletion } from '@/lib/notify';
 import { playRin } from '@/lib/sound';
 import { isExpired, remainingMs } from '@/lib/timer';
 import { useSettings } from '@/state/settings';
@@ -25,7 +26,7 @@ const DEFAULT_TITLE = 'Hibi Task';
  */
 export function TimerEffects() {
   const { activeTask, complete } = useTasks();
-  const { settings } = useSettings();
+  const { settings, t } = useSettings();
   const now = useNow(Boolean(activeTask));
 
   /*
@@ -45,7 +46,10 @@ export function TimerEffects() {
 
     complete();
     if (settings.sound) playRin();
-  }, [activeTask, now, complete, settings.sound]);
+    if (settings.notify) {
+      notifyCompletion(DEFAULT_TITLE, t.notificationDone(activeTask.name));
+    }
+  }, [activeTask, now, complete, settings.sound, settings.notify, t]);
 
   useEffect(() => {
     if (!activeTask) {
