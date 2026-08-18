@@ -1,5 +1,6 @@
 'use client';
 
+import { Trash2, Wind } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNow } from '@/hooks/useNow';
 import { formatClock, formatDate, formatDuration } from '@/lib/format';
@@ -12,6 +13,9 @@ import styles from './HistoryList.module.css';
 
 /** Quanto tempo o "confirmar?" da exclusão espera antes de desistir. */
 const CONFIRM_TIMEOUT_MS = 3_000;
+
+/* Mesma régua de ícones do app inteiro (ver Topbar). */
+const icon = { size: 15, strokeWidth: 1.5, 'aria-hidden': true } as const;
 
 /*
  * A duração exibida depende do status — e o switch sobre a discriminated
@@ -47,7 +51,10 @@ export function HistoryList() {
       <span className="eyebrow">{t.historyTitle}</span>
 
       {tasks.length === 0 ? (
-        <p className={styles.empty}>{t.historyEmpty}</p>
+        <p className={styles.empty}>
+          <Wind size={22} strokeWidth={1.25} aria-hidden />
+          {t.historyEmpty}
+        </p>
       ) : (
         <ul className={styles.list}>
           {tasks.map((task) => (
@@ -115,26 +122,9 @@ function HistoryItem({ task, now }: { task: Task; now: number }) {
             aria-label={t.deleteAria(task.name)}
             onClick={() => setConfirming(true)}
           >
-            <TrashIcon />
+            <Trash2 {...icon} />
           </button>
         ))}
     </li>
-  );
-}
-
-/* Lixeira em traço fino, desenhada à mão — sem biblioteca de ícones. */
-function TrashIcon() {
-  return (
-    <svg
-      viewBox="0 0 16 16"
-      width="14"
-      height="14"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1"
-      aria-hidden="true"
-    >
-      <path d="M2.5 4h11M6.5 4V2.5h3V4M4.2 4l.7 9.5h6.2l.7-9.5M6.6 6.8v4.4M9.4 6.8v4.4" />
-    </svg>
   );
 }

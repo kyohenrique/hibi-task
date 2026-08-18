@@ -1,13 +1,18 @@
 .stage {
+  width: 100%;
   max-width: var(--measure);
   margin: 0 auto;
-  padding: var(--space-12) var(--space-4) var(--space-8);
+  padding: var(--space-4) 0;
 }
 
 .empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
   color: var(--text-faint);
   text-align: center;
-  margin: var(--space-16) 0;
+  margin: var(--space-12) 0;
 }
 
 .list {

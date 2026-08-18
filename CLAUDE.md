@@ -45,3 +45,4 @@ Diretórios ainda inexistentes são criados conforme as etapas do projeto avanç
 - Commits em **inglês**, no padrão conventional commits (`feat:`, `fix:`, `docs:`...). Commits são sempre propostos e aprovados pelo mantenedor antes de executados.
 - Componentes usam export nomeado; páginas usam export default (exigência do Next).
 - Nenhuma string fixa de UI em componente — todo texto visível vem de `useSettings().t`.
+- Ícones: `lucide-react`, 15px, traço 1.5, `currentColor` e `aria-hidden` — o ícone acompanha um rótulo de texto (ou o botão tem `aria-label`), nunca fala sozinho.

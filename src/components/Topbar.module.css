@@ -1,8 +1,11 @@
+/* Dentro do cartão, o respiro externo é dele; a topbar só se afasta
+   do conteúdo abaixo. */
 .topbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--space-6) var(--space-8);
+  padding: 0;
+  margin-bottom: var(--space-8);
 }
 
 .wordmark {
@@ -21,6 +24,9 @@
 /* Links e o botão de ajustes com a mesma cara: navegação é navegação. */
 .nav a,
 .nav button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
   background: none;
   border: 0;
   padding: 0;

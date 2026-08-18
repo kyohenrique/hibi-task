@@ -1,5 +1,6 @@
 'use client';
 
+import { Play, Square } from 'lucide-react';
 import { Fragment, useState, type CSSProperties } from 'react';
 import { useNow } from '@/hooks/useNow';
 import { formatClock } from '@/lib/format';
@@ -31,6 +32,9 @@ const PRESETS = [
   { minutes: 15, labelKey: 'presetPause' },
   { minutes: 25, labelKey: 'presetPomodoro' },
 ] as const;
+
+/* Mesma régua de ícones do app inteiro (ver Topbar). */
+const icon = { size: 15, strokeWidth: 1.5, 'aria-hidden': true } as const;
 
 /*
  * A tela do timer tem dois protagonistas que se revezam: em repouso, a
@@ -194,6 +198,7 @@ function SetupView() {
           start(trimmedName, parsedMinutes * MINUTE_MS);
         }}
       >
+        <Play {...icon} />
         {t.start}
       </button>
     </section>
@@ -227,6 +232,7 @@ function RunningView({ task }: { task: RunningTask }) {
       />
 
       <button type="button" className={`${styles.action} ${styles.actionStop}`} onClick={stop}>
+        <Square {...icon} />
         {t.stop}
       </button>
     </section>

@@ -1,5 +1,6 @@
 'use client';
 
+import { Bell, Languages, Palette, Trash2, Volume2 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { LANGUAGE_NAMES, type Language } from '@/lib/i18n';
 import { requestNotifyPermission } from '@/lib/notify';
@@ -13,6 +14,9 @@ const CONFIRM_TIMEOUT_MS = 3_000;
 
 const THEMES: ThemeSetting[] = ['gofun', 'sumi', 'system'];
 const LANGUAGES: Language[] = ['pt', 'en'];
+
+/* Mesma régua de ícones do app inteiro (ver Topbar). */
+const icon = { size: 15, strokeWidth: 1.5, 'aria-hidden': true } as const;
 
 /*
  * O modal usa o elemento <dialog> NATIVO do HTML: showModal() prende o
@@ -72,7 +76,10 @@ export function SettingsModal({ open, onClose }: { open: boolean; onClose: () =>
       </header>
 
       <div className={styles.row}>
-        <span className={styles.rowLabel}>{t.themeLabel}</span>
+        <span className={styles.rowLabel}>
+          <Palette {...icon} />
+          {t.themeLabel}
+        </span>
         <div className={styles.options}>
           {THEMES.map((theme) => (
             <button
@@ -90,7 +97,10 @@ export function SettingsModal({ open, onClose }: { open: boolean; onClose: () =>
       </div>
 
       <div className={styles.row}>
-        <span className={styles.rowLabel}>{t.languageLabel}</span>
+        <span className={styles.rowLabel}>
+          <Languages {...icon} />
+          {t.languageLabel}
+        </span>
         <div className={styles.options}>
           {LANGUAGES.map((language) => (
             <button
@@ -107,7 +117,10 @@ export function SettingsModal({ open, onClose }: { open: boolean; onClose: () =>
       </div>
 
       <div className={styles.row}>
-        <span className={styles.rowLabel}>{t.soundLabel}</span>
+        <span className={styles.rowLabel}>
+          <Volume2 {...icon} />
+          {t.soundLabel}
+        </span>
         <div className={styles.options}>
           <button
             type="button"
@@ -138,7 +151,10 @@ export function SettingsModal({ open, onClose }: { open: boolean; onClose: () =>
       </div>
 
       <div className={styles.row}>
-        <span className={styles.rowLabel}>{t.notifyLabel}</span>
+        <span className={styles.rowLabel}>
+          <Bell {...icon} />
+          {t.notifyLabel}
+        </span>
         <div className={styles.options}>
           {/*
             Ligar é assíncrono: primeiro o navegador pergunta ao usuário
@@ -185,6 +201,7 @@ export function SettingsModal({ open, onClose }: { open: boolean; onClose: () =>
             className={styles.clear}
             onClick={() => setConfirmingClear(true)}
           >
+            <Trash2 {...icon} />
             {t.clearHistory}
           </button>
         )}
