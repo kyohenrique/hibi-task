@@ -79,6 +79,9 @@ const pt = {
   // notificação do navegador
   notificationDone: (name: string) => `"${name}" concluída`,
 
+  /* Lido só por leitores de tela, antes do nome da microestação. */
+  microseasonLabel: '— microestação de hoje',
+
   // durações e datas
   lessThanMinute: 'menos de 1 min',
   months: [
@@ -137,6 +140,8 @@ const en: Dictionary = {
   clearHistory: 'clear history',
 
   notificationDone: (name) => `"${name}" completed`,
+
+  microseasonLabel: '— today’s microseason',
 
   lessThanMinute: 'less than 1 min',
   months: [

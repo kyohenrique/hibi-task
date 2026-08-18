@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Shippori_Mincho, Zen_Kaku_Gothic_New } from "next/font/google";
+import { Microseason } from "@/components/Microseason";
 import { Petals } from "@/components/Petals";
 import { TimerEffects } from "@/components/TimerEffects";
 import { Topbar } from "@/components/Topbar";
@@ -82,6 +83,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               <div className={styles.card}>
                 <Topbar />
                 <main>{children}</main>
+                <Microseason />
               </div>
             </div>
           </TasksProvider>
