@@ -1,9 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import {
+  MAX_MINUTES,
   MINUTE_MS,
   completeTask,
   elapsedMs,
   isExpired,
+  isValidMinutes,
   progress,
   remainingMs,
   stopTask,
@@ -69,6 +71,22 @@ describe('isExpired', () => {
   it('falso um instante antes do fim, verdadeiro exatamente no fim', () => {
     expect(isExpired(running, START + 25 * MINUTE_MS - 1)).toBe(false);
     expect(isExpired(running, START + 25 * MINUTE_MS)).toBe(true);
+  });
+});
+
+describe('isValidMinutes', () => {
+  it('aceita inteiros dentro dos limites de produto', () => {
+    expect(isValidMinutes(1)).toBe(true);
+    expect(isValidMinutes(25)).toBe(true);
+    expect(isValidMinutes(MAX_MINUTES)).toBe(true);
+  });
+
+  it('rejeita zero, negativos, acima do teto e não-inteiros', () => {
+    expect(isValidMinutes(0)).toBe(false);
+    expect(isValidMinutes(-5)).toBe(false);
+    expect(isValidMinutes(MAX_MINUTES + 1)).toBe(false);
+    expect(isValidMinutes(25.5)).toBe(false);
+    expect(isValidMinutes(NaN)).toBe(false);
   });
 });
 

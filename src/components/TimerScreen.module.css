@@ -37,18 +37,26 @@
   appearance: none;
 }
 
-.pomodoro {
+.presets {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  gap: var(--space-2);
+  font-size: var(--size-sm);
+  color: var(--text-faint);
+}
+
+.preset {
   background: none;
   border: 0;
   padding: 0;
   font: inherit;
-  font-size: var(--size-sm);
   color: var(--text-faint);
   cursor: pointer;
   transition: color var(--dur-base) var(--ease);
 }
 
-.pomodoro:hover {
+.preset:hover {
   color: var(--text);
 }
 

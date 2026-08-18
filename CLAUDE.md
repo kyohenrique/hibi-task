@@ -31,7 +31,8 @@ Diretórios ainda inexistentes são criados conforme as etapas do projeto avanç
 - **Cor significa tempo passando**: o acento vermelho (shu) só aparece enquanto um timer corre. Em repouso, a interface é monocromática. Na dúvida sobre usar `--accent`: se a coisa não está rodando, use `--text-muted`.
 - **O timer calcula, não conta**: guarda-se `startedAt` (timestamp) + duração, e o restante é derivado de `Date.now()`. Nunca decrementar contador com `setInterval`. Timer vencido com a aba fechada é marcado como concluído na próxima carga.
 - **Três status, sem pausa**: `running` (em andamento), `stopped` (interrompida — única ação possível após iniciar) e `completed` (concluída). `Task` é uma discriminated union por status.
-- **Pomodoro** é só um atalho que preenche 25 minutos; nunca inicia o timer sozinho.
+- **Atalhos rápidos** (respiro 5 · pausa 15 · pomodoro 25) só preenchem os minutos; nunca iniciam o timer sozinhos.
+- **Duração limitada**: inteiro entre `MIN_MINUTES` (1) e `MAX_MINUTES` (180), constantes de `lib/timer.ts` — teto de produto (sessões de foco, não turnos), única fonte da verdade para formulário e validação.
 - **i18n sem biblioteca**: dicionário TypeScript em `lib/i18n.ts` (pt/en), escolha salva nos ajustes. Sem rotas por locale.
 - **Notificação**: pedir permissão apenas quando o usuário ligar a opção, nunca no carregamento.
 - Persistência em `localStorage` sob chave versionada (`hibi.v1`), com parse defensivo.

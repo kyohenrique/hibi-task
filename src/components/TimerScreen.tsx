@@ -1,14 +1,32 @@
 'use client';
 
-import { useEffect, useState, type CSSProperties } from 'react';
+import { Fragment, useEffect, useState, type CSSProperties } from 'react';
 import { useNow } from '@/hooks/useNow';
 import { formatClock } from '@/lib/format';
-import { MINUTE_MS, isExpired, progress, remainingMs } from '@/lib/timer';
+import {
+  MAX_MINUTES,
+  MIN_MINUTES,
+  MINUTE_MS,
+  isExpired,
+  isValidMinutes,
+  progress,
+  remainingMs,
+} from '@/lib/timer';
 import type { RunningTask } from '@/lib/types';
 import { useTasks } from '@/state/tasks';
 import styles from './TimerScreen.module.css';
 
-const POMODORO_MINUTES = 25;
+/*
+ * Atalhos rápidos: respiro e pausa são as pausas curta e longa do método
+ * pomodoro; o pomodoro é o bloco de foco. `as const` congela o array e
+ * faz o TypeScript tratar cada valor como literal, não como number/string
+ * genéricos.
+ */
+const PRESETS = [
+  { label: 'respiro', minutes: 5 },
+  { label: 'pausa', minutes: 15 },
+  { label: 'pomodoro', minutes: 25 },
+] as const;
 
 /*
  * A tela do timer tem dois protagonistas que se revezam: em repouso, a
@@ -35,8 +53,7 @@ function SetupView() {
   const [minutes, setMinutes] = useState('25');
 
   const parsedMinutes = Number(minutes);
-  const validMinutes =
-    Number.isInteger(parsedMinutes) && parsedMinutes >= 1 && parsedMinutes <= 999;
+  const validMinutes = isValidMinutes(parsedMinutes);
   const canStart = name.trim().length > 0 && validMinutes;
 
   const previewMs = validMinutes ? parsedMinutes * MINUTE_MS : 0;
@@ -55,8 +72,8 @@ function SetupView() {
         <input
           className={`${styles.field} ${styles.fieldMinutes}`}
           type="number"
-          min={1}
-          max={999}
+          min={MIN_MINUTES}
+          max={MAX_MINUTES}
           value={minutes}
           onChange={(e) => setMinutes(e.target.value)}
           aria-label="duração em minutos"
@@ -64,14 +81,22 @@ function SetupView() {
         min
       </p>
 
-      {/* Pomodoro: só preenche o campo. Começar continua sendo um ato seu. */}
-      <button
-        type="button"
-        className={styles.pomodoro}
-        onClick={() => setMinutes(String(POMODORO_MINUTES))}
-      >
-        pomodoro · {POMODORO_MINUTES} min
-      </button>
+      {/* Atalhos: só preenchem o campo. Começar continua sendo um ato seu. */}
+      <div className={styles.presets}>
+        {PRESETS.map((preset, i) => (
+          // Fragment com key: agrupa botão + separador sem criar nós extras
+          <Fragment key={preset.minutes}>
+            {i > 0 && <span aria-hidden="true">·</span>}
+            <button
+              type="button"
+              className={styles.preset}
+              onClick={() => setMinutes(String(preset.minutes))}
+            >
+              {preset.label} {preset.minutes}
+            </button>
+          </Fragment>
+        ))}
+      </div>
 
       <span className={`clock ${styles.clock}`}>{formatClock(previewMs)}</span>
 

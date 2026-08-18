@@ -16,6 +16,24 @@ import type { CompletedTask, RunningTask, StoppedTask, Task } from './types';
 /** Um minuto em milissegundos — a unidade que a UI usa para criar tarefas. */
 export const MINUTE_MS = 60_000;
 
+/*
+ * Limites de produto para a duração, em minutos. O teto de 3 horas é uma
+ * decisão de produto, não técnica: o app cronometra sessões de foco, não
+ * turnos de trabalho. Vivem aqui (e não na UI) para haver UMA fonte da
+ * verdade — o formulário e a validação apenas leem.
+ */
+export const MIN_MINUTES = 1;
+export const MAX_MINUTES = 180;
+
+/** A duração digitada é utilizável? Inteiro entre MIN e MAX. */
+export function isValidMinutes(minutes: number): boolean {
+  return (
+    Number.isInteger(minutes) &&
+    minutes >= MIN_MINUTES &&
+    minutes <= MAX_MINUTES
+  );
+}
+
 function clamp(value: number, min: number, max: number): number {
   return Math.min(Math.max(value, min), max);
 }
