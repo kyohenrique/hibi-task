@@ -1,0 +1,32 @@
+/* A moldura: ocupa a janela inteira e centraliza o cartão nela.
+   Fora do cartão existe só o fundo — o vazio é deliberado. */
+.frame {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: var(--space-8) var(--space-4);
+}
+
+/* O cartão onde o app inteiro vive: papel um degrau mais fundo que o
+   fundo (no sumi, tinta um degrau mais clara), borda hairline e respiro
+   interno generoso. A altura mínima evita que a troca de página faça o
+   cartão pulsar de tamanho. */
+.card {
+  width: min(38rem, 100%);
+  min-height: 34rem;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: var(--hairline) solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6) var(--space-8) var(--space-8);
+  transition: background-color var(--dur-slow) var(--ease);
+}
+
+/* O conteúdo da página ocupa o resto do cartão e se centraliza nele. */
+.card main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}

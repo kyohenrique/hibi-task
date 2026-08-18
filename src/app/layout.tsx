@@ -5,6 +5,7 @@ import { Topbar } from "@/components/Topbar";
 import { SettingsProvider } from "@/state/settings";
 import { TasksProvider } from "@/state/tasks";
 import "@/styles/tokens.css";
+import styles from "./layout.module.css";
 
 /*
  * Fontes via next/font em vez de <link> para o Google Fonts: o Next baixa
@@ -75,8 +76,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <SettingsProvider>
           <TasksProvider>
             <TimerEffects />
-            <Topbar />
-            <main>{children}</main>
+            <div className={styles.frame}>
+              <div className={styles.card}>
+                <Topbar />
+                <main>{children}</main>
+              </div>
+            </div>
           </TasksProvider>
         </SettingsProvider>
       </body>
